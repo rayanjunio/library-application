@@ -1,6 +1,8 @@
 package com.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -11,14 +13,25 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @NotBlank(message = "Name cannot be blank")
+  @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
   private String name;
 
+  @NotBlank(message = "E-mail cannot be blank")
+  @Email(message = "E-mail format is invalid")
+  @Column(unique = true)
   private String email;
 
+  @NotBlank(message = "Password cannot be blank")
+  @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
   private String password;
 
+  @NotBlank(message = "CPF cannot be blank")
+  @CPF(message = "CPF is invalid")
+  @Column(unique = true)
   private String cpf;
 
+  @NotNull(message = "Status cannot be blank")
   @Enumerated(EnumType.STRING)
   private UserStatus status;
 

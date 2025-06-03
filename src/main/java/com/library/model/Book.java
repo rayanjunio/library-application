@@ -1,6 +1,9 @@
 package com.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -11,10 +14,18 @@ public class Book {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @NotBlank(message = "ISBN cannot be blank")
+  @Column(unique = true, nullable = false)
+  private String isbn;
+
+  @NotBlank(message = "Title cannot be blank")
   private String title;
 
+  @NotBlank(message = "Author name cannot be blank")
   private String author;
 
+  @NotNull(message = "Quantity cannot be null")
+  @Min(value = 1, message = "Quantity must be at least 1")
   private int quantity;
 
   private int availableQuantity;
@@ -28,6 +39,14 @@ public class Book {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
   }
 
   public String getTitle() {

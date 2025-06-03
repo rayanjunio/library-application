@@ -1,6 +1,7 @@
 package com.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "profiles")
@@ -9,6 +10,7 @@ public class Profile {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @NotNull(message = "Role cannot be null")
   @Enumerated(EnumType.STRING)
   private Role role;
 
