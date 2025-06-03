@@ -2,6 +2,7 @@ package com.library.dao;
 
 import com.library.model.Profile;
 import com.library.model.Role;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -10,7 +11,7 @@ import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 @ApplicationScoped
-public class ProfileDAO {
+public class ProfileDAO implements PanacheRepository<Profile> {
   @Inject
   EntityManager entityManager;
 
