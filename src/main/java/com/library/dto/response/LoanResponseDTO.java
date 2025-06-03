@@ -2,7 +2,7 @@ package com.library.dto.response;
 
 import java.time.LocalDate;
 
-public class LoanDTO {
+public class LoanResponseDTO {
   private long id;
   private long userId;
   private long bookId;
@@ -11,9 +11,9 @@ public class LoanDTO {
   private LocalDate expectedReturnDate;
   private LocalDate actualReturnDate;
 
-  public LoanDTO() {}
+  public LoanResponseDTO() {}
 
-  public LoanDTO(long id, long userId, long bookId, boolean isActive, LocalDate loanDate, LocalDate expectedReturnDate, LocalDate actualReturnDate) {
+  public LoanResponseDTO(long id, long userId, long bookId, boolean isActive, LocalDate loanDate, LocalDate expectedReturnDate, LocalDate actualReturnDate) {
     this.id = id;
     this.userId = userId;
     this.bookId = bookId;

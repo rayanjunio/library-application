@@ -1,24 +1,22 @@
 package com.library.dto.response;
 
-import java.util.List;
-
-public class BookDTO {
+public class BookResponseDTO {
   private long id;
+  private String isbn;
   private String title;
   private String author;
   private int quantity;
   private int availableQuantity;
-  private List<Long> loansIds;
 
-  public BookDTO() {}
+  public BookResponseDTO() {}
 
-  public BookDTO(long id, String title, String author, int quantity, int availableQuantity, List<Long> loansIds) {
+  public BookResponseDTO(long id, String isbn, String title, String author, int quantity, int availableQuantity) {
     this.id = id;
+    this.isbn = isbn;
     this.title = title;
     this.author = author;
     this.quantity = quantity;
     this.availableQuantity = availableQuantity;
-    this.loansIds = loansIds;
   }
 
   public long getId() {
@@ -27,6 +25,14 @@ public class BookDTO {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
   }
 
   public String getTitle() {
@@ -59,13 +65,5 @@ public class BookDTO {
 
   public void setAvailableQuantity(int availableQuantity) {
     this.availableQuantity = availableQuantity;
-  }
-
-  public List<Long> getLoansIds() {
-    return loansIds;
-  }
-
-  public void setLoansIds(List<Long> loansIds) {
-    this.loansIds = loansIds;
   }
 }

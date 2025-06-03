@@ -2,11 +2,11 @@ package com.library.dto.response;
 
 import com.library.model.Role;
 
-public class ProfileDTO {
+public class ProfileResponseDTO {
   private long id;
   private Role role;
 
-  public ProfileDTO(long id, Role role) {
+  public ProfileResponseDTO(long id, Role role) {
     this.id = id;
     this.role = role;
   }

@@ -4,7 +4,7 @@ import com.library.model.UserStatus;
 
 import java.util.List;
 
-public class UserDTO {
+public class UserResponseDTO {
   private long id;
   private String name;
   private String email;
@@ -13,9 +13,9 @@ public class UserDTO {
   private long profileId;
   private List<Long> loansIds;
 
-  public UserDTO() {}
+  public UserResponseDTO() {}
 
-  public UserDTO(long id, String name, String email, String cpf, UserStatus status, long profileId, List<Long> loansIds) {
+  public UserResponseDTO(long id, String name, String email, String cpf, UserStatus status, long profileId, List<Long> loansIds) {
     this.id = id;
     this.name = name;
     this.email = email;
