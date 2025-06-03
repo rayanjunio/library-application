@@ -1,13 +1,15 @@
 package com.library.dto.request;
 
 import com.library.model.Role;
+import jakarta.validation.constraints.NotNull;
 
-public class ProfileDTO {
+public class ProfileRequestDTO {
+  @NotNull(message = "Role cannot be null")
   private Role role;
 
-  public ProfileDTO() {}
+  public ProfileRequestDTO() {}
 
-  public ProfileDTO(Role role) {
+  public ProfileRequestDTO(Role role) {
     this.role = role;
   }
 

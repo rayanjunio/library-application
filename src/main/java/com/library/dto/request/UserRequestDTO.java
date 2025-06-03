@@ -1,24 +1,42 @@
 package com.library.dto.request;
 
 import com.library.model.UserStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 
-public class UserDTO {
+public class UserRequestDTO {
+  @NotBlank(message = "Name cannot be blank")
+  @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
   private String name;
+
+  @NotBlank(message = "E-mail cannot be blank")
+  @Email(message = "E-mail format is invalid")
   private String email;
+
+  @NotBlank(message = "Password cannot be blank")
   private String password;
+
+  @NotBlank(message = "CPF cannot be blank")
+  @CPF(message = "CPF is invalid")
   private String cpf;
+
+  @NotNull(message = "Status cannot be blank")
+  @Enumerated(EnumType.STRING)
   private UserStatus status;
-  private long profileId;
 
-  public UserDTO() {}
+  public UserRequestDTO() {}
 
-  public UserDTO(String name, String email, String password, String cpf, UserStatus status, long profileId) {
+  public UserRequestDTO(String name, String email, String password, String cpf, UserStatus status) {
     this.name = name;
     this.email = email;
     this.password = password;
     this.cpf = cpf;
     this.status = status;
-    this.profileId = profileId;
   }
 
   public String getName() {
@@ -59,13 +77,5 @@ public class UserDTO {
 
   public void setStatus(UserStatus status) {
     this.status = status;
-  }
-
-  public long getProfileId() {
-    return profileId;
-  }
-
-  public void setProfileId(long profileId) {
-    this.profileId = profileId;
   }
 }
