@@ -38,4 +38,8 @@ public class UserDAO implements PanacheRepository<User> {
   public User findById(long id) {
     return entityManager.find(User.class, id);
   }
+
+  public Optional<User> findByCpf(String cpf) {
+    return find("cpf", cpf).firstResultOptional();
+  }
 }
