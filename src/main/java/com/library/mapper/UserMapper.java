@@ -14,7 +14,6 @@ public class UserMapper {
     user.setEmail(userRequestDTO.getEmail());
     user.setPassword(userRequestDTO.getPassword());
     user.setCpf(userRequestDTO.getCpf());
-    user.setStatus(userRequestDTO.getStatus());
     return user;
   }
 

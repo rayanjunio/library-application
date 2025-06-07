@@ -1,11 +1,7 @@
 package com.library.dto.request;
 
-import com.library.model.UserStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -25,18 +21,13 @@ public class UserRequestDTO {
   @CPF(message = "CPF is invalid")
   private String cpf;
 
-  @NotNull(message = "Status cannot be blank")
-  @Enumerated(EnumType.STRING)
-  private UserStatus status;
-
   public UserRequestDTO() {}
 
-  public UserRequestDTO(String name, String email, String password, String cpf, UserStatus status) {
+  public UserRequestDTO(String name, String email, String password, String cpf) {
     this.name = name;
     this.email = email;
     this.password = password;
     this.cpf = cpf;
-    this.status = status;
   }
 
   public String getName() {
@@ -69,13 +60,5 @@ public class UserRequestDTO {
 
   public void setCpf(String cpf) {
     this.cpf = cpf;
-  }
-
-  public UserStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(UserStatus status) {
-    this.status = status;
   }
 }
