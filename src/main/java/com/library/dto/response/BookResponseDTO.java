@@ -1,16 +1,16 @@
 package com.library.dto.response;
 
 public class BookResponseDTO {
-  private long id;
+  private Long id;
   private String isbn;
   private String title;
   private String author;
-  private int quantity;
-  private int availableQuantity;
+  private Integer quantity;
+  private Integer availableQuantity;
 
   public BookResponseDTO() {}
 
-  public BookResponseDTO(long id, String isbn, String title, String author, int quantity, int availableQuantity) {
+  public BookResponseDTO(Long id, String isbn, String title, String author, Integer quantity, Integer availableQuantity) {
     this.id = id;
     this.isbn = isbn;
     this.title = title;
@@ -19,11 +19,11 @@ public class BookResponseDTO {
     this.availableQuantity = availableQuantity;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -51,19 +51,19 @@ public class BookResponseDTO {
     this.author = author;
   }
 
-  public int getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(int quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 
-  public int getAvailableQuantity() {
+  public Integer getAvailableQuantity() {
     return availableQuantity;
   }
 
-  public void setAvailableQuantity(int availableQuantity) {
+  public void setAvailableQuantity(Integer availableQuantity) {
     this.availableQuantity = availableQuantity;
   }
 }

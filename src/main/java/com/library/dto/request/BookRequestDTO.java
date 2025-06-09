@@ -18,7 +18,7 @@ public class BookRequestDTO {
 
   @NotNull(message = "Quantity cannot be null")
   @Min(value = 1, message = "Quantity must be at least 1")
-  private int quantity;
+  private Integer quantity;
 
   public BookRequestDTO() {}
 
@@ -52,11 +52,11 @@ public class BookRequestDTO {
     this.author = author;
   }
 
-  public int getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(int quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 }
