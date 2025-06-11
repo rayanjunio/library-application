@@ -35,12 +35,20 @@ public class BookBO {
                 .collect(Collectors.toList());
     }
 
-    public BookResponseDTO findById(Long id) {
-        Book book = bookDAO.findById(id);
-        if (book == null) {
-            throw new RuntimeException("Book not found");
+    public BookResponseDTO findByIsbn(String isbn) {
+        Book book = bookDAO.findByIsbn(isbn);
+        if(book == null) {
+            throw new RuntimeException("This book does not exist");
         }
         return bookMapper.toDTO(book);
+    }
+
+    public List<BookResponseDTO> findAvailableBooks() {
+        List<Book> books = bookDAO.findAvailableBooks(10);
+
+        return books.stream()
+                .map(book -> bookMapper.toDTO(book))
+                .toList();
     }
 
     @Transactional
