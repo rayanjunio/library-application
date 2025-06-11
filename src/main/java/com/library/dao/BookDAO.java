@@ -4,6 +4,7 @@ import com.library.model.Book;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -32,6 +33,22 @@ public class BookDAO {
 
   public Book findById(long id) {
     return entityManager.find(Book.class, id);
+  }
+
+  public Book findByIsbn(String isbn) {
+    try {
+      return entityManager.createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
+              .setParameter("isbn", isbn)
+              .getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
+  }
+
+  public List<Book> findAvailableBooks(int limit) {
+    return entityManager.createQuery("SELECT b FROM Book b WHERE b.availableQuantity > 0", Book.class)
+            .setMaxResults(limit)
+            .getResultList();
   }
 
   public List<Book> findAll() {
