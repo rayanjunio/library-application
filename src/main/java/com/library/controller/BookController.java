@@ -30,9 +30,25 @@ public class BookController {
     }
 
     @GET
-    @Path("/{id}")
-    public BookResponseDTO findById(@PathParam("id") Long id) {
-        return bookBO.findById(id);
+    @Path("{isbn}")
+    public Response findByIsbn(@PathParam("isbn") String isbn) {
+        try {
+            BookResponseDTO response = bookBO.findByIsbn(isbn);
+            return Response.status(Response.Status.OK).entity(response).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+        }
+    }
+
+    @GET()
+    @Path("available")
+    public Response findAvailableBooks() {
+        try {
+            List<BookResponseDTO> response = bookBO.findAvailableBooks();
+            return Response.status(Response.Status.OK).entity(response).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+        }
     }
 
     @PUT
