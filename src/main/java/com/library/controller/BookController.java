@@ -3,6 +3,7 @@ package com.library.controller;
 import com.library.bo.BookBO;
 import com.library.dto.request.BookRequestDTO;
 import com.library.dto.response.BookResponseDTO;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,18 +20,21 @@ public class BookController {
     BookBO bookBO;
 
     @POST
+    @RolesAllowed({ "ADMIN" })
     public Response create(BookRequestDTO request) {
         BookResponseDTO response = bookBO.create(request);
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
     @GET
+    @RolesAllowed({ "ADMIN" })
     public List<BookResponseDTO> findAll() {
         return bookBO.findAll();
     }
 
     @GET
     @Path("{isbn}")
+    @RolesAllowed({ "ADMIN", "MEMBER"})
     public Response findByIsbn(@PathParam("isbn") String isbn) {
         try {
             BookResponseDTO response = bookBO.findByIsbn(isbn);
@@ -42,6 +46,7 @@ public class BookController {
 
     @GET()
     @Path("available")
+    @RolesAllowed({ "ADMIN", "MEMBER" })
     public Response findAvailableBooks() {
         try {
             List<BookResponseDTO> response = bookBO.findAvailableBooks();
@@ -53,12 +58,14 @@ public class BookController {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed({ "ADMIN" })
     public BookResponseDTO update(@PathParam("id") Long id, BookRequestDTO request) {
         return bookBO.update(id, request);
     }
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed({ "ADMIN" })
     public Response delete(@PathParam("id") Long id) {
         bookBO.delete(id);
         return Response.noContent().build();
