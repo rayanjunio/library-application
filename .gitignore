@@ -29,6 +29,9 @@ Thumbs.db
 
 # Local environment
 .env
+privateKey.pem
+src/main/resources/META-INF/publicKey.pem
+
 
 # Plugin directory
 /.quarkus/cli/plugins/
