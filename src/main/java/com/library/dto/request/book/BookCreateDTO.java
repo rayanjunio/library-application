@@ -1,13 +1,11 @@
-package com.library.dto.request;
+package com.library.dto.request.book;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class BookRequestDTO {
+public class BookCreateDTO {
   @NotBlank(message = "ISBN cannot be blank")
-  @Column(unique = true, nullable = false)
   private String isbn;
 
   @NotBlank(message = "Title cannot be blank")
@@ -20,9 +18,9 @@ public class BookRequestDTO {
   @Min(value = 1, message = "Quantity must be at least 1")
   private Integer quantity;
 
-  public BookRequestDTO() {}
+  public BookCreateDTO() {}
 
-  public BookRequestDTO(String title, String author, int quantity) {
+  public BookCreateDTO(String title, String author, int quantity) {
     this.title = title;
     this.author = author;
     this.quantity = quantity;
