@@ -1,6 +1,6 @@
 package com.library.mapper;
 
-import com.library.dto.request.BookRequestDTO;
+import com.library.dto.request.book.BookCreateDTO;
 import com.library.dto.response.BookResponseDTO;
 import com.library.model.Book;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,7 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class BookMapper {
 
-  public Book toEntity(BookRequestDTO dto) {
+  public Book toEntity(BookCreateDTO dto) {
     Book book = new Book();
     book.setIsbn(dto.getIsbn());
     book.setTitle(dto.getTitle());
