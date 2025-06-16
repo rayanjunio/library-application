@@ -1,16 +1,17 @@
 package com.library.dao;
 
 import com.library.model.Book;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
-public class BookDAO {
+public class BookDAO implements PanacheRepository<Book> {
   @Inject
   EntityManager entityManager;
 
@@ -25,24 +26,12 @@ public class BookDAO {
   }
 
   @Transactional
-  public void delete(long id) {
-    Book book = this.findById(id);
-
-    if(book != null) entityManager.remove(book);
+  public void delete(Book book) {
+    entityManager.remove(book);
   }
 
-  public Book findById(long id) {
-    return entityManager.find(Book.class, id);
-  }
-
-  public Book findByIsbn(String isbn) {
-    try {
-      return entityManager.createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
-              .setParameter("isbn", isbn)
-              .getSingleResult();
-    } catch (NoResultException e) {
-      return null;
-    }
+  public Optional<Book> findByIsbn(String isbn) {
+    return find("isbn", isbn).firstResultOptional();
   }
 
   public List<Book> findAvailableBooks(int limit) {
@@ -51,7 +40,7 @@ public class BookDAO {
             .getResultList();
   }
 
-  public List<Book> findAll() {
-    return entityManager.createQuery("SELECT b FROM Book b", Book.class).getResultList();
+  public List<Book> findAllBooks() {
+    return findAll().stream().toList();
   }
 }
