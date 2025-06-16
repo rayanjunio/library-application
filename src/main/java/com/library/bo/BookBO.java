@@ -1,7 +1,8 @@
 package com.library.bo;
 
 import com.library.dao.BookDAO;
-import com.library.dto.request.BookRequestDTO;
+import com.library.dto.request.book.BookCreateDTO;
+import com.library.dto.request.book.BookUpdateDTO;
 import com.library.dto.response.BookResponseDTO;
 import com.library.mapper.BookMapper;
 import com.library.model.Book;
@@ -10,6 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -22,25 +24,31 @@ public class BookBO {
     BookMapper bookMapper;
 
     @Transactional
-    public BookResponseDTO create(BookRequestDTO request) {
-        Book book = bookMapper.toEntity(request);
+    public BookResponseDTO create(BookCreateDTO bookCreateDTO) {
+        Optional<Book> bookExists = bookDAO.findByIsbn(bookCreateDTO.getIsbn());
+
+        if(bookExists.isPresent()) {
+            throw new IllegalArgumentException("This book already exists.");
+        }
+
+        Book book = bookMapper.toEntity(bookCreateDTO);
         book.setAvailableQuantity(book.getQuantity());
         bookDAO.save(book);
         return bookMapper.toDTO(book);
     }
 
     public List<BookResponseDTO> findAll() {
-        return bookDAO.findAll().stream()
+        return bookDAO.findAllBooks().stream()
                 .map(bookMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public BookResponseDTO findByIsbn(String isbn) {
-        Book book = bookDAO.findByIsbn(isbn);
-        if(book == null) {
+        Optional<Book> book = bookDAO.findByIsbn(isbn);
+        if(book.isEmpty()) {
             throw new RuntimeException("This book does not exist");
         }
-        return bookMapper.toDTO(book);
+        return bookMapper.toDTO(book.get());
     }
 
     public List<BookResponseDTO> findAvailableBooks() {
@@ -52,24 +60,34 @@ public class BookBO {
     }
 
     @Transactional
-    public BookResponseDTO update(Long id, BookRequestDTO request) {
-        Book book = bookDAO.findById(id);
-        if (book == null) {
-            throw new RuntimeException("Book not found");
+    public BookResponseDTO updateBook(String isbn, BookUpdateDTO bookUpdateDTO) {
+        Optional<Book> bookExists = bookDAO.findByIsbn(isbn);
+        if (bookExists.isEmpty()) {
+            throw new IllegalArgumentException("This book doesn't exist.");
         }
-        
-        // Atualiza os campos do livro
-        book.setIsbn(request.getIsbn());
-        book.setTitle(request.getTitle());
-        book.setAuthor(request.getAuthor());
-        book.setQuantity(request.getQuantity());
+
+        Book book = bookExists.get();
+
+        if(bookUpdateDTO.getIsbn() != null) book.setIsbn(bookUpdateDTO.getIsbn());
+        if(bookUpdateDTO.getTitle() != null) book.setTitle(bookUpdateDTO.getTitle());
+        if(bookUpdateDTO.getAuthor() != null) book.setAuthor(bookUpdateDTO.getAuthor());
+        if(bookUpdateDTO.getQuantity() != null) {
+            int activeLoans = book.getQuantity() - book.getAvailableQuantity();
+            book.setQuantity(bookUpdateDTO.getQuantity());
+            book.setAvailableQuantity(activeLoans + book.getQuantity());
+        }
         
         book = bookDAO.merge(book);
         return bookMapper.toDTO(book);
     }
 
     @Transactional
-    public void delete(Long id) {
-        bookDAO.delete(id);
+    public void delete(String isbn) {
+        Optional<Book> book = bookDAO.findByIsbn(isbn);
+        if(book.isEmpty()) {
+            throw new IllegalArgumentException("This book doesn't exist.");
+        }
+
+        bookDAO.delete(book.get());
     }
 } 
