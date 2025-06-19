@@ -39,4 +39,10 @@ public class LoanDAO {
             .setParameter("userId", userId)
             .getResultList();
   }
+
+  public long countUserPendingLoans(long userId) {
+    return entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE l.user.id = :userId AND l.actualReturnDate IS NULL", Long.class)
+            .setParameter("userId", userId)
+            .getSingleResult();
+  }
 }
