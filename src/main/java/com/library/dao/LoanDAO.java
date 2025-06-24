@@ -45,4 +45,9 @@ public class LoanDAO {
             .setParameter("userId", userId)
             .getSingleResult();
   }
+
+  public List<Loan> getPendingLoans() {
+    return entityManager.createQuery("SELECT l FROM Loan l WHERE l.actualReturnDate IS NULL", Loan.class)
+            .getResultList();
+  }
 }
