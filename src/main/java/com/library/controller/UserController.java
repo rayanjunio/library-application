@@ -1,15 +1,14 @@
 package com.library.controller;
 
 import com.library.bo.UserBO;
-import com.library.dto.request.UserRequestDTO;
-import com.library.dto.request.UserUpdateDTO;
+import com.library.dto.request.user.UserRequestDTO;
+import com.library.dto.request.user.UserUpdateDTO;
 import com.library.dto.response.UserResponseDTO;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
 
@@ -18,9 +17,6 @@ public class UserController {
 
   @Inject
   UserBO userBO;
-
-  @Inject
-  JsonWebToken jwt;
 
   @POST
   @Produces(MediaType.APPLICATION_JSON)
@@ -36,7 +32,7 @@ public class UserController {
 
   @GET
   @Path("/{id}")
-  @RolesAllowed({"ADMIN", "MEMBER"})
+  @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   public Response getUser(@PathParam("id") long id) {
     try {
@@ -48,7 +44,7 @@ public class UserController {
   }
 
   @GET
-  @RolesAllowed({"ADMIN"})
+  @RolesAllowed({ "ADMIN" })
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsers() {
     try {
@@ -61,13 +57,12 @@ public class UserController {
 
   @PUT
   @Path("/{id}")
-  @RolesAllowed({"ADMIN", "MEMBER"})
+  @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateUser(@PathParam("id") long id, UserUpdateDTO userUpdateDTO) {
     try {
-      long userId = Long.parseLong(jwt.getClaim("userId").toString());
-      UserResponseDTO response = userBO.updateUser(id, userUpdateDTO, userId);
+      UserResponseDTO response = userBO.updateUser(id, userUpdateDTO);
       return Response.status(Response.Status.OK).entity(response).build();
     } catch (RuntimeException e) {
       return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -76,11 +71,10 @@ public class UserController {
 
   @DELETE
   @Path("/{id}")
-  @RolesAllowed({"ADMIN", "MEMBER"})
+  @RolesAllowed({ "ADMIN", "MEMBER" })
   public Response deleteUser(@PathParam("id") long id) {
     try {
-      long userId = Long.parseLong(jwt.getClaim("userId").toString());
-      userBO.deleteUser(id, userId);
+      userBO.deleteUser(id);
       return Response.status(Response.Status.NO_CONTENT).build();
     } catch (RuntimeException e) {
       return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
