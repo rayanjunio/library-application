@@ -1,6 +1,6 @@
 package com.library.mapper;
 
-import com.library.dto.request.UserRequestDTO;
+import com.library.dto.request.user.UserRequestDTO;
 import com.library.dto.response.UserResponseDTO;
 import com.library.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
