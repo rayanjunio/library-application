@@ -39,7 +39,7 @@ public class User {
   @JoinColumn(name = "profile_id")
   private Profile profile;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Loan> loans;
 
   public long getId() {
