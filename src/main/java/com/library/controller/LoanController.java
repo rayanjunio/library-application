@@ -6,10 +6,7 @@ import com.library.dto.response.LoanResponseDTO;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 @Path("loan")
@@ -36,6 +33,18 @@ public class LoanController {
     try {
       LoanResponseDTO response = loanBO.finishLoan(loanId);
       return Response.status(Response.Status.OK).entity(response).build();
+    } catch (IllegalArgumentException e) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+    }
+  }
+
+  @PATCH
+  @Path("{email}")
+  @RolesAllowed({ "ADMIN" })
+  public Response removeUserFine(@PathParam("email") String email) {
+    try {
+      loanBO.removeUserFine(email);
+      return Response.status(Response.Status.NO_CONTENT).build();
     } catch (IllegalArgumentException e) {
       return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
     }
