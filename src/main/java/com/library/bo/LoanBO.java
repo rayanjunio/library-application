@@ -96,4 +96,18 @@ public class LoanBO {
 
     return loanMapper.toDto(loan);
   }
+
+  public void removeUserFine(String email) {
+    Optional<User> userExists = userDAO.findByEmail(email);
+    if(userExists.isEmpty()) {
+      throw new IllegalArgumentException("User not found");
+    }
+
+    User user = userExists.get();
+
+    if(user.getStatus() == UserStatus.FINED) {
+      user.setStatus(UserStatus.ACTIVE);
+      userDAO.merge(user);
+    }
+  }
 }
