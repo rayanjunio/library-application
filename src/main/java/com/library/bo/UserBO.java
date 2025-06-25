@@ -3,6 +3,7 @@ package com.library.bo;
 import com.library.dao.LoanDAO;
 import com.library.dao.ProfileDAO;
 import com.library.dao.UserDAO;
+import com.library.dto.request.ChangePasswordDTO;
 import com.library.dto.request.user.UserRequestDTO;
 import com.library.dto.request.user.UserUpdateDTO;
 import com.library.dto.response.UserResponseDTO;
@@ -137,5 +138,24 @@ public class UserBO {
     }
 
     userDAO.delete(id);
+  }
+
+  public void changePassword(ChangePasswordDTO dto) {
+    User user = userDAO.findById(jwtContext.getUserId());
+
+    if(user == null || !BcryptUtil.matches(dto.getCurrentPassword(), user.getPassword())) {
+      throw new IllegalArgumentException("Invalid credentials.");
+    }
+
+    if(!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {
+      throw new IllegalArgumentException("The new password does not match the confirmation.");
+    }
+
+    if(BcryptUtil.matches(dto.getNewPassword(), user.getPassword())) {
+      throw new IllegalArgumentException("New password must be different from the current one.");
+    }
+
+    user.setPassword(BcryptUtil.bcryptHash(dto.getNewPassword()));
+    userDAO.merge(user);
   }
 }
