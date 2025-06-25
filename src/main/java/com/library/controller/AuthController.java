@@ -1,7 +1,7 @@
 package com.library.controller;
 
-import com.library.bo.AuthBO;
-import com.library.dto.request.LoginRequestDTO;
+import com.library.service.AuthService;
+import com.library.model.dto.auth.LoginRequestDTO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.Response;
 @Path("auth")
 public class AuthController {
   @Inject
-  AuthBO authBO;
+  AuthService authService;
 
   @POST
   @Path(("login"))
@@ -21,7 +21,7 @@ public class AuthController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response login(LoginRequestDTO loginRequestDTO) {
     try {
-      String token = authBO.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
+      String token = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
       return Response.status(Response.Status.OK).entity("{\"token\":\"" + token + "\"}").build();
     } catch (IllegalArgumentException e) {
       return Response.status(Response.Status.BAD_REQUEST).entity(e).build();

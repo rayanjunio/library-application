@@ -1,10 +1,10 @@
 package com.library.controller;
 
-import com.library.bo.UserBO;
-import com.library.dto.request.ChangePasswordDTO;
-import com.library.dto.request.user.UserRequestDTO;
-import com.library.dto.request.user.UserUpdateDTO;
-import com.library.dto.response.UserResponseDTO;
+import com.library.model.bo.UserBO;
+import com.library.model.dto.user.ChangePasswordDTO;
+import com.library.model.dto.user.UserRequestDTO;
+import com.library.model.dto.user.UserUpdateDTO;
+import com.library.model.dto.user.UserResponseDTO;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;

@@ -1,9 +1,9 @@
 package com.library.controller;
 
-import com.library.bo.BookBO;
-import com.library.dto.request.book.BookCreateDTO;
-import com.library.dto.request.book.BookUpdateDTO;
-import com.library.dto.response.BookResponseDTO;
+import com.library.model.bo.BookBO;
+import com.library.model.dto.book.BookCreateDTO;
+import com.library.model.dto.book.BookUpdateDTO;
+import com.library.model.dto.book.BookResponseDTO;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;

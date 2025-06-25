@@ -1,8 +1,8 @@
 package com.library.controller;
 
-import com.library.bo.ProfileBO;
-import com.library.dto.request.ProfileRequestDTO;
-import com.library.dto.response.ProfileResponseDTO;
+import com.library.model.bo.ProfileBO;
+import com.library.model.dto.profile.ProfileRequestDTO;
+import com.library.model.dto.profile.ProfileResponseDTO;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;

@@ -1,8 +1,8 @@
 package com.library.controller;
 
-import com.library.bo.LoanBO;
-import com.library.dto.request.loan.LoanRequestDTO;
-import com.library.dto.response.LoanResponseDTO;
+import com.library.model.bo.LoanBO;
+import com.library.model.dto.loan.LoanRequestDTO;
+import com.library.model.dto.loan.LoanResponseDTO;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
