@@ -1,6 +1,7 @@
 package com.library.controller;
 
 import com.library.bo.UserBO;
+import com.library.dto.request.ChangePasswordDTO;
 import com.library.dto.request.user.UserRequestDTO;
 import com.library.dto.request.user.UserUpdateDTO;
 import com.library.dto.response.UserResponseDTO;
@@ -77,6 +78,18 @@ public class UserController {
     try {
       userBO.deleteUser(id);
       return Response.status(Response.Status.NO_CONTENT).build();
+    } catch (RuntimeException e) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+  }
+
+  @PATCH
+  @Path("set-password")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response changePassword(@Valid ChangePasswordDTO dto) {
+    try {
+      userBO.changePassword(dto);
+      return Response.status(Response.Status.OK).build();
     } catch (RuntimeException e) {
       return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
