@@ -11,6 +11,7 @@ import com.library.model.Profile;
 import com.library.model.User;
 import com.library.model.UserStatus;
 import com.library.security.JwtContext;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -59,8 +60,8 @@ public class UserBO {
       user.setProfile(profile);
     }
 
+    user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
     user.setStatus(UserStatus.ACTIVE);
-
     userDAO.save(user);
 
     return mapper.toDTO(user);

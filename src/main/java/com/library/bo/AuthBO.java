@@ -4,6 +4,7 @@ import com.library.dao.UserDAO;
 import com.library.dto.internal.UserTokenInfo;
 import com.library.model.User;
 import com.library.service.TokenService;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -21,7 +22,7 @@ public class AuthBO {
   public String authenticate(String email, String password) {
     Optional<User> user = userDAO.findByEmail(email.trim());
 
-    if(user.isEmpty() || !user.get().getPassword().equals(password)) {
+    if(user.isEmpty() || !BcryptUtil.matches(password, user.get().getPassword())) {
       throw new IllegalArgumentException("Invalid user credentials.");
     }
 
