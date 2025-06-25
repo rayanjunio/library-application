@@ -81,6 +81,11 @@
             <artifactId>quarkus-scheduler</artifactId>
             <version>3.24.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-elytron-security-common</artifactId>
+            <version>3.24.0</version>
+        </dependency>
     </dependencies>
 
     <build>
