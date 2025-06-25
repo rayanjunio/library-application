@@ -6,6 +6,7 @@ import com.library.dto.request.user.UserUpdateDTO;
 import com.library.dto.response.UserResponseDTO;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -21,7 +22,7 @@ public class UserController {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response createUser(UserRequestDTO userRequestDTO) {
+  public Response createUser(@Valid UserRequestDTO userRequestDTO) {
     try {
       UserResponseDTO response = userBO.createUser(userRequestDTO);
       return Response.status(Response.Status.CREATED).entity(response).build();
@@ -60,7 +61,7 @@ public class UserController {
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response updateUser(@PathParam("id") long id, UserUpdateDTO userUpdateDTO) {
+  public Response updateUser(@PathParam("id") long id, @Valid UserUpdateDTO userUpdateDTO) {
     try {
       UserResponseDTO response = userBO.updateUser(id, userUpdateDTO);
       return Response.status(Response.Status.OK).entity(response).build();
