@@ -15,4 +15,9 @@ public class JwtContext {
     JsonNumber jsonNumber = jwt.getClaim("userId");
     return jsonNumber.longValue();
   }
+
+  public String getUserRole() {
+    System.out.println(jwt.getGroups().toString());
+    return jwt.getGroups().toString();
+  }
 }
