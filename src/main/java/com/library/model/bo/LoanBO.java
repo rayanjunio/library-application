@@ -1,5 +1,6 @@
 package com.library.model.bo;
 
+import com.library.exception.type.BusinessException;
 import com.library.model.dao.BookDAO;
 import com.library.model.dao.LoanDAO;
 import com.library.model.dao.UserDAO;
@@ -34,42 +35,42 @@ public class LoanBO {
 
   public LoanResponseDTO createLoan(LoanRequestDTO loanRequestDTO) {
     if(loanRequestDTO.getExpectedReturnDate().isBefore(LocalDate.now())) {
-      throw new IllegalArgumentException("The expected return date must be after today");
+      throw new BusinessException("The expected return date must be after today", 400);
     }
 
     Period period = Period.between(LocalDate.now(), loanRequestDTO.getExpectedReturnDate());
     if(period.getDays() > 15) {
-      throw new IllegalArgumentException("The loan period cannot exceed 15 days.");
+      throw new BusinessException("The loan period cannot exceed 15 days", 400);
     }
 
     Optional<User> userExists = userDAO.findByEmail(loanRequestDTO.getUserEmail());
     if(userExists.isEmpty()) {
-      throw new IllegalArgumentException("This user doesn't exist");
+      throw new BusinessException("This user does not exist", 400);
     }
 
     User user = userExists.get();
 
     if(user.getStatus() == UserStatus.FINED) {
-      throw new IllegalArgumentException("This user cannot take out more loans until he settles his pending loans");
+      throw new BusinessException("This user cannot take out more loans until he settles his pending loans", 400);
     }
 
     if(user.getProfile().getRole().name().equals("ADMIN")) {
-      throw new IllegalArgumentException("Admins cannot create loans for themselves. Please use your personal account");
+      throw new BusinessException("Admins cannot create loans for themselves. Please, use your personal account", 400);
     }
 
     if(loanDAO.countUserPendingLoans(user.getId()) != 0) {
-      throw new IllegalArgumentException("This user cannot take out more loans because he already has one active loan");
+      throw new BusinessException("This user cannot take out more loans because he already has one active loan", 400);
     }
 
     Optional<Book> bookExists = bookDAO.findByIsbn(loanRequestDTO.getBookIsbn());
     if(bookExists.isEmpty()) {
-      throw new IllegalArgumentException("This book doesn't exist");
+      throw new BusinessException("This book does not exist", 400);
     }
 
     Book book = bookExists.get();
 
     if(book.getAvailableQuantity() <= 0) {
-      throw new IllegalArgumentException("This book is unavailable at the moment.");
+      throw new BusinessException("This book is unavailable at the moment", 400);
     }
 
     book.setAvailableQuantity(book.getAvailableQuantity() - 1);
@@ -86,7 +87,7 @@ public class LoanBO {
   public LoanResponseDTO finishLoan(int loanId) {
     Loan loan = loanDAO.findById(loanId);
     if(loan == null) {
-      throw new IllegalArgumentException("This loan doesn't exist");
+      throw new BusinessException("This loan does not exist", 400);
     }
 
     loan.setActualReturnDate(LocalDate.now());
@@ -104,7 +105,7 @@ public class LoanBO {
   public void removeUserFine(String email) {
     Optional<User> userExists = userDAO.findByEmail(email);
     if(userExists.isEmpty()) {
-      throw new IllegalArgumentException("User not found");
+      throw new BusinessException("User not found", 404);
     }
 
     User user = userExists.get();

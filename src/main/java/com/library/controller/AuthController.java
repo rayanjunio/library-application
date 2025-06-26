@@ -20,11 +20,7 @@ public class AuthController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response login(LoginRequestDTO loginRequestDTO) {
-    try {
       String token = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
       return Response.status(Response.Status.OK).entity("{\"token\":\"" + token + "\"}").build();
-    } catch (IllegalArgumentException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-    }
   }
 }

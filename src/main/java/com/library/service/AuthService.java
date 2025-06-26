@@ -1,5 +1,6 @@
 package com.library.service;
 
+import com.library.exception.type.BusinessException;
 import com.library.model.dao.UserDAO;
 import com.library.model.dto.auth.UserTokenInfoDTO;
 import com.library.model.entity.User;
@@ -22,7 +23,7 @@ public class AuthService {
     Optional<User> user = userDAO.findByEmail(email.trim());
 
     if(user.isEmpty() || !BcryptUtil.matches(password, user.get().getPassword())) {
-      throw new IllegalArgumentException("Invalid user credentials.");
+      throw new BusinessException("Invalid user credentials", 400);
     }
 
     UserTokenInfoDTO userTokenInfoDTO = new UserTokenInfoDTO(user.get().getId(), email, user.get().getProfile().getRole());

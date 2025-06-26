@@ -18,35 +18,23 @@ public class LoanController {
   @POST
   @RolesAllowed({ "ADMIN" })
   public Response createLoan(@Valid LoanRequestDTO loanRequestDTO) {
-    try {
       LoanResponseDTO response = loanBO.createLoan(loanRequestDTO);
       return Response.status(Response.Status.CREATED).entity(response).build();
-    } catch (IllegalArgumentException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-    }
   }
 
   @PUT
   @Path("{loanId}")
   @RolesAllowed( { "ADMIN" })
   public Response finishLoan(@PathParam("loanId") int loanId) {
-    try {
       LoanResponseDTO response = loanBO.finishLoan(loanId);
       return Response.status(Response.Status.OK).entity(response).build();
-    } catch (IllegalArgumentException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-    }
   }
 
   @PATCH
   @Path("{email}")
   @RolesAllowed({ "ADMIN" })
   public Response removeUserFine(@PathParam("email") String email) {
-    try {
       loanBO.removeUserFine(email);
       return Response.status(Response.Status.NO_CONTENT).build();
-    } catch (IllegalArgumentException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-    }
   }
 }

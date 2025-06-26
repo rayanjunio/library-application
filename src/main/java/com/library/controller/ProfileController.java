@@ -21,11 +21,7 @@ public class ProfileController {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createProfile(@Valid ProfileRequestDTO profileRequestDTO) {
-    try {
       ProfileResponseDTO response = profileBO.createProfile(profileRequestDTO);
       return Response.status(Response.Status.CREATED).entity(response).build();
-    } catch (IllegalArgumentException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-    }
   }
 }

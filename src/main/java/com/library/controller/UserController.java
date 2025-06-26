@@ -24,12 +24,8 @@ public class UserController {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(@Valid UserRequestDTO userRequestDTO) {
-    try {
       UserResponseDTO response = userBO.createUser(userRequestDTO);
       return Response.status(Response.Status.CREATED).entity(response).build();
-    } catch (RuntimeException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @POST
@@ -38,12 +34,8 @@ public class UserController {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createAdminUser(@Valid UserRequestDTO userRequestDTO) {
-    try {
       UserResponseDTO response = userBO.createAdminUser(userRequestDTO);
       return Response.status(Response.Status.CREATED).entity(response).build();
-    } catch (RuntimeException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @GET
@@ -51,24 +43,16 @@ public class UserController {
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   public Response getUser(@PathParam("id") long id) {
-    try {
       UserResponseDTO response = userBO.getUser(id);
       return Response.status(Response.Status.OK).entity(response).build();
-    } catch (RuntimeException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
   }
 
   @GET
   @RolesAllowed({ "ADMIN" })
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsers() {
-    try {
       List<UserResponseDTO> response = userBO.getAllUsers();
       return Response.status(Response.Status.OK).entity(response).build();
-    } catch (RuntimeException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
   }
 
   @PUT
@@ -77,35 +61,23 @@ public class UserController {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateUser(@PathParam("id") long id, @Valid UserUpdateDTO userUpdateDTO) {
-    try {
       UserResponseDTO response = userBO.updateUser(id, userUpdateDTO);
       return Response.status(Response.Status.OK).entity(response).build();
-    } catch (RuntimeException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
   }
 
   @DELETE
   @Path("/{id}")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   public Response deleteUser(@PathParam("id") long id) {
-    try {
       userBO.deleteUser(id);
       return Response.status(Response.Status.NO_CONTENT).build();
-    } catch (RuntimeException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
   }
 
   @PATCH
   @Path("set-password")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response changePassword(@Valid ChangePasswordDTO dto) {
-    try {
       userBO.changePassword(dto);
       return Response.status(Response.Status.OK).build();
-    } catch (RuntimeException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
   }
 }

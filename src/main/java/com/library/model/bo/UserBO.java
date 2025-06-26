@@ -1,5 +1,6 @@
 package com.library.model.bo;
 
+import com.library.exception.type.BusinessException;
 import com.library.model.dao.LoanDAO;
 import com.library.model.dao.ProfileDAO;
 import com.library.model.dao.UserDAO;
@@ -41,11 +42,11 @@ public class UserBO {
     Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
 
     if(userExists.isPresent()) {
-      throw new IllegalArgumentException("This email already is registered");
+      throw new BusinessException("This email already is registered", 400);
     }
 
     if(userDAO.findByCpf(userRequestDTO.getCpf()).isPresent()) {
-      throw new IllegalArgumentException("This CPF already is registered");
+      throw new BusinessException("This CPF already is registered", 400);
     }
 
     User user = mapper.toEntity(userRequestDTO);
@@ -53,11 +54,11 @@ public class UserBO {
 
     if(userDAO.count() == 0) {
       profile = profileDAO.findByRole("ADMIN")
-              .orElseThrow(() -> new RuntimeException("ADMIN does not exist"));
+              .orElseThrow(() -> new BusinessException("ADMIN profile does not exist", 400));
       user.setProfile(profile);
     } else {
       profile = profileDAO.findByRole("MEMBER")
-              .orElseThrow(() -> new RuntimeException("ADMIN does not exist"));
+              .orElseThrow(() -> new BusinessException("MEMBER profile does not exist", 400));
       user.setProfile(profile);
     }
 
@@ -72,17 +73,17 @@ public class UserBO {
     Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
 
     if(userExists.isPresent()) {
-      throw new IllegalArgumentException("This email already is registered");
+      throw new BusinessException("This email already is registered", 400);
     }
 
     if(userDAO.findByCpf(userRequestDTO.getCpf()).isPresent()) {
-      throw new IllegalArgumentException("This CPF already is registered");
+      throw new BusinessException("This CPF already is registered", 400);
     }
 
     User user = mapper.toEntity(userRequestDTO);
 
     Profile profile = profileDAO.findByRole("ADMIN")
-            .orElseThrow(() -> new RuntimeException("ADMIN does not exist"));
+            .orElseThrow(() -> new BusinessException("ADMIN profile does not exist", 400));
     user.setProfile(profile);
 
     user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
@@ -94,12 +95,12 @@ public class UserBO {
 
   public UserResponseDTO getUser(long id) {
     if(jwtContext.getUserId() != id) {
-      throw new IllegalArgumentException("You are forbidden to access this content");
+      throw new BusinessException("You are forbidden to access this content", 403);
     }
 
     User user = userDAO.findById(id);
     if (user == null) {
-      throw new IllegalArgumentException("User not found");
+      throw new BusinessException("User not found", 404);
     }
     return mapper.toDTO(user);
   }
@@ -112,12 +113,12 @@ public class UserBO {
 
   public UserResponseDTO updateUser(long id, UserUpdateDTO userUpdateDTO) {
     if(jwtContext.getUserId() != id) {
-      throw new IllegalArgumentException("You are forbidden to access this content");
+      throw new BusinessException("You are forbidden to access this content", 403);
     }
 
     User user = userDAO.findById(id);
     if (user == null) {
-      throw new IllegalArgumentException("User not found");
+      throw new BusinessException("User not found", 404);
     }
 
     // Atualiza apenas os campos que foram fornecidos
@@ -128,7 +129,7 @@ public class UserBO {
       Optional<User> existingUser = userDAO.findByEmail(userUpdateDTO.getEmail());
 
       if (existingUser.isPresent() && existingUser.get().getId() != id) {
-        throw new IllegalArgumentException("This email is already registered");
+        throw new BusinessException("This email is already registered", 400);
       }
       user.setEmail(userUpdateDTO.getEmail());
     }
@@ -137,7 +138,7 @@ public class UserBO {
       Optional<User> existingUser = userDAO.findByCpf(userUpdateDTO.getCpf());
 
       if (existingUser.isPresent() && existingUser.get().getId() != id) {
-        throw new IllegalArgumentException("This CPF is already registered");
+        throw new BusinessException("This CPF is already registered", 400);
       }
 
       user.setCpf(userUpdateDTO.getCpf());
@@ -149,16 +150,16 @@ public class UserBO {
 
   public void deleteUser(long id) {
     if(jwtContext.getUserId() != id) {
-      throw new IllegalArgumentException("You are forbidden to access this content");
+      throw new BusinessException("You are forbidden to access this content", 403);
     }
 
     if(loanDAO.countUserPendingLoans(id) != 0) {
-      throw new IllegalArgumentException("It is not possible, because this user has pending loans");
+      throw new BusinessException("It is not possible, because this user has pending loans", 400);
     }
 
     User user = userDAO.findById(id);
     if (user == null) {
-      throw new IllegalArgumentException("User not found");
+      throw new BusinessException("User not found", 404);
     }
 
     userDAO.delete(id);
@@ -168,15 +169,15 @@ public class UserBO {
     User user = userDAO.findById(jwtContext.getUserId());
 
     if(user == null || !BcryptUtil.matches(dto.getCurrentPassword(), user.getPassword())) {
-      throw new IllegalArgumentException("Invalid credentials.");
+      throw new BusinessException("Invalid credentials", 400);
     }
 
     if(!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {
-      throw new IllegalArgumentException("The new password does not match the confirmation.");
+      throw new BusinessException("The new password does not match the confirmation", 400);
     }
 
     if(BcryptUtil.matches(dto.getNewPassword(), user.getPassword())) {
-      throw new IllegalArgumentException("New password must be different from the current one.");
+      throw new BusinessException("New password must be different from the current one", 400);
     }
 
     user.setPassword(BcryptUtil.bcryptHash(dto.getNewPassword()));

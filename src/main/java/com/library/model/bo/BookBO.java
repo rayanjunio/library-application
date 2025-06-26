@@ -1,5 +1,6 @@
 package com.library.model.bo;
 
+import com.library.exception.type.BusinessException;
 import com.library.model.dao.BookDAO;
 import com.library.model.dto.book.BookCreateDTO;
 import com.library.model.dto.book.BookUpdateDTO;
@@ -28,7 +29,7 @@ public class BookBO {
         Optional<Book> bookExists = bookDAO.findByIsbn(bookCreateDTO.getIsbn());
 
         if(bookExists.isPresent()) {
-            throw new IllegalArgumentException("This book already exists.");
+            throw new BusinessException("This book already exists", 400);
         }
 
         Book book = bookMapper.toEntity(bookCreateDTO);
@@ -46,7 +47,7 @@ public class BookBO {
     public BookResponseDTO findByIsbn(String isbn) {
         Optional<Book> book = bookDAO.findByIsbn(isbn);
         if(book.isEmpty()) {
-            throw new RuntimeException("This book does not exist");
+            throw new BusinessException("This book does not exist", 400);
         }
         return bookMapper.toDTO(book.get());
     }
@@ -63,7 +64,7 @@ public class BookBO {
     public BookResponseDTO updateBook(String isbn, BookUpdateDTO bookUpdateDTO) {
         Optional<Book> bookExists = bookDAO.findByIsbn(isbn);
         if (bookExists.isEmpty()) {
-            throw new IllegalArgumentException("This book doesn't exist.");
+            throw new BusinessException("This book does not exist", 400);
         }
 
         Book book = bookExists.get();
@@ -85,7 +86,7 @@ public class BookBO {
     public void delete(String isbn) {
         Optional<Book> book = bookDAO.findByIsbn(isbn);
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("This book doesn't exist.");
+            throw new BusinessException("This book does not exist", 400);
         }
 
         bookDAO.delete(book.get());

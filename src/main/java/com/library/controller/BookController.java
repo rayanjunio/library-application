@@ -24,70 +24,46 @@ public class BookController {
     @POST
     @RolesAllowed({ "ADMIN" })
     public Response create(@Valid BookCreateDTO request) {
-        try {
-            BookResponseDTO response = bookBO.create(request);
-            return Response.status(Response.Status.CREATED).entity(response).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        BookResponseDTO response = bookBO.create(request);
+        return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
     @GET
     @RolesAllowed({ "ADMIN" })
     public Response findAll() {
-        try {
-            List<BookResponseDTO> response = bookBO.findAll();
-            return Response.status(Response.Status.CREATED).entity(response).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        List<BookResponseDTO> response = bookBO.findAll();
+        return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
     @GET
     @Path("{isbn}")
     @RolesAllowed({ "ADMIN", "MEMBER"})
     public Response findByIsbn(@PathParam("isbn") String isbn) {
-        try {
-            BookResponseDTO response = bookBO.findByIsbn(isbn);
-            return Response.status(Response.Status.OK).entity(response).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        BookResponseDTO response = bookBO.findByIsbn(isbn);
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
     @GET()
     @Path("available")
     @RolesAllowed({ "ADMIN", "MEMBER" })
     public Response findAvailableBooks() {
-        try {
-            List<BookResponseDTO> response = bookBO.findAvailableBooks();
-            return Response.status(Response.Status.OK).entity(response).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        List<BookResponseDTO> response = bookBO.findAvailableBooks();
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
     @PUT()
     @Path("/{isbn}")
     @RolesAllowed({ "ADMIN" })
     public Response update(@PathParam("isbn") String isbn, BookUpdateDTO bookUpdateDTO) {
-        try {
-            BookResponseDTO response = bookBO.updateBook(isbn, bookUpdateDTO);
-            return Response.status(Response.Status.OK).entity(response).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        BookResponseDTO response = bookBO.updateBook(isbn, bookUpdateDTO);
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
     @DELETE
     @Path("/{isbn}")
     @RolesAllowed({ "ADMIN" })
     public Response delete(@PathParam("isbn") String isbn) {
-        try {
-            bookBO.delete(isbn);
-            return Response.noContent().build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        bookBO.delete(isbn);
+        return Response.noContent().build();
     }
 } 
