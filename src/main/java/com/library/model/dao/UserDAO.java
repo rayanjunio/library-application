@@ -39,6 +39,13 @@ public class UserDAO implements PanacheRepository<User> {
     return entityManager.find(User.class, id);
   }
 
+  public Optional<User> findByIdWithLoans(long id) {
+    return entityManager.createQuery("SELECT u FROM User u LEFT JOIN FETCH u.loans WHERE u.id = :id", User.class)
+            .setParameter("id", id)
+            .getResultStream()
+            .findFirst();
+  }
+
   public Optional<User> findByCpf(String cpf) {
     return find("cpf", cpf).firstResultOptional();
   }
