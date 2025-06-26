@@ -32,6 +32,20 @@ public class UserController {
     }
   }
 
+  @POST
+  @Path("add-admin")
+  @RolesAllowed({ "ADMIN" })
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response createAdminUser(@Valid UserRequestDTO userRequestDTO) {
+    try {
+      UserResponseDTO response = userBO.createAdminUser(userRequestDTO);
+      return Response.status(Response.Status.CREATED).entity(response).build();
+    } catch (RuntimeException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @GET
   @Path("/{id}")
   @RolesAllowed({ "ADMIN", "MEMBER" })
