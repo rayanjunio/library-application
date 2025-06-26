@@ -29,8 +29,8 @@ Thumbs.db
 
 # Local environment
 .env
-privateKey.pem
-src/main/resources/META-INF/publicKey.pem
+src/main/resources/keys/privateKey.pem
+src/main/resources/keys/publicKey.pem
 
 
 # Plugin directory
