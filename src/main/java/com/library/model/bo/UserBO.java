@@ -16,6 +16,7 @@ import com.library.security.JwtContext;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,13 +99,12 @@ public class UserBO {
       throw new BusinessException("You are forbidden to access this content", 403);
     }
 
-    User user = userDAO.findById(id);
-    if (user == null) {
-      throw new BusinessException("User not found", 404);
-    }
+    User user = userDAO.findByIdWithLoans(id)
+            .orElseThrow(() -> new BusinessException("User not found", 404));
     return mapper.toDTO(user);
   }
 
+  @Transactional
   public List<UserResponseDTO> getAllUsers() {
     return userDAO.findAll().stream()
             .map(mapper::toDTO)
