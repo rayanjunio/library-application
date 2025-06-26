@@ -1,5 +1,6 @@
 package com.library.model.dto.user;
 
+import com.library.model.dto.loan.LoanResponseDTO;
 import com.library.model.enums.UserStatus;
 
 import java.util.List;
@@ -10,19 +11,19 @@ public class UserResponseDTO {
   private String email;
   private String cpf;
   private UserStatus status;
-  private long profileId;
-  private List<Long> loansIds;
+  private String profile;
+  private List<LoanResponseDTO> loans;
 
   public UserResponseDTO() {}
 
-  public UserResponseDTO(long id, String name, String email, String cpf, UserStatus status, long profileId, List<Long> loansIds) {
+  public UserResponseDTO(long id, String name, String email, String cpf, UserStatus status, String profile, List<LoanResponseDTO> loans) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.cpf = cpf;
     this.status = status;
-    this.profileId = profileId;
-    this.loansIds = loansIds;
+    this.profile = profile;
+    this.loans = loans;
   }
 
   public long getId() {
@@ -65,19 +66,19 @@ public class UserResponseDTO {
     this.status = status;
   }
 
-  public long getProfileId() {
-    return profileId;
+  public String getProfile() {
+    return profile;
   }
 
-  public void setProfileId(long profileId) {
-    this.profileId = profileId;
+  public void setProfile(String profile) {
+    this.profile = profile;
   }
 
-  public List<Long> getLoansIds() {
-    return loansIds;
+  public List<LoanResponseDTO> getLoans() {
+    return loans;
   }
 
-  public void setLoansIds(List<Long> loansIds) {
-    this.loansIds = loansIds;
+  public void setLoans(List<LoanResponseDTO> loans) {
+    this.loans = loans;
   }
 }
