@@ -94,7 +94,7 @@ public class UserBO {
   }
 
   public UserResponseDTO getUser(long id) {
-    if(jwtContext.getUserId() != id) {
+    if(!jwtContext.getUserRole().equals("[ADMIN]") && jwtContext.getUserId() != id) {
       throw new BusinessException("You are forbidden to access this content", 403);
     }
 
