@@ -53,6 +53,10 @@ public class LoanBO {
       throw new IllegalArgumentException("This user cannot take out more loans until he settles his pending loans");
     }
 
+    if(user.getProfile().getRole().name().equals("ADMIN")) {
+      throw new IllegalArgumentException("Admins cannot create loans for themselves. Please use your personal account");
+    }
+
     if(loanDAO.countUserPendingLoans(user.getId()) != 0) {
       throw new IllegalArgumentException("This user cannot take out more loans because he already has one active loan");
     }
