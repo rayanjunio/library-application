@@ -68,6 +68,30 @@ public class UserBO {
     return mapper.toDTO(user);
   }
 
+  public UserResponseDTO createAdminUser(UserRequestDTO userRequestDTO) {
+    Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
+
+    if(userExists.isPresent()) {
+      throw new IllegalArgumentException("This email already is registered");
+    }
+
+    if(userDAO.findByCpf(userRequestDTO.getCpf()).isPresent()) {
+      throw new IllegalArgumentException("This CPF already is registered");
+    }
+
+    User user = mapper.toEntity(userRequestDTO);
+
+    Profile profile = profileDAO.findByRole("ADMIN")
+            .orElseThrow(() -> new RuntimeException("ADMIN does not exist"));
+    user.setProfile(profile);
+
+    user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
+    user.setStatus(UserStatus.ACTIVE);
+    userDAO.save(user);
+
+    return mapper.toDTO(user);
+  }
+
   public UserResponseDTO getUser(long id) {
     if(jwtContext.getUserId() != id) {
       throw new IllegalArgumentException("You are forbidden to access this content");
