@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "users")
@@ -40,7 +41,7 @@ public class User {
   private Profile profile;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Loan> loans;
+  private List<Loan> loans = new ArrayList<>();
 
   public long getId() {
     return id;
