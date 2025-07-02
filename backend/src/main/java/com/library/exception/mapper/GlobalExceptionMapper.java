@@ -12,6 +12,7 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
 
   @Override
   public Response toResponse(Exception exception) {
+    exception.printStackTrace();
     ErrorResponse error = new ErrorResponse(STATUS, MESSAGE);
     return Response.status(STATUS).entity(error).build();
   }
