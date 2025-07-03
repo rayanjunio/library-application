@@ -6,12 +6,12 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
+public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
   private final int STATUS = 500;
-  private final String MESSAGE = "An unexpected error ocurred";
+  private final String MESSAGE = "An unexpected error occurred";
 
   @Override
-  public Response toResponse(Exception exception) {
+  public Response toResponse(Throwable throwable) {
     ErrorResponse error = new ErrorResponse(STATUS, MESSAGE);
     return Response.status(STATUS).entity(error).build();
   }
