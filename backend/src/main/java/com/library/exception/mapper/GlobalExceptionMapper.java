@@ -12,7 +12,7 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
   @Override
   public Response toResponse(Throwable throwable) {
-    exception.printStackTrace();
+    throwable.printStackTrace();
     ErrorResponse error = new ErrorResponse(STATUS, MESSAGE);
     return Response.status(STATUS).entity(error).build();
   }
