@@ -21,6 +21,8 @@ public class LoanMapper {
     loanResponseDTO.setId(loan.getId());
     loanResponseDTO.setUserEmail(loan.getUser().getEmail());
     loanResponseDTO.setBookIsbn(loan.getBook().getIsbn());
+    loanResponseDTO.setBookTitle(loan.getBook().getTitle());
+    loanResponseDTO.setBookAuthor(loan.getBook().getAuthor());
     loanResponseDTO.setActive(loan.isActive());
     loanResponseDTO.setLoanDate(loan.getLoanDate());
     loanResponseDTO.setExpectedReturnDate(loan.getExpectedReturnDate());
