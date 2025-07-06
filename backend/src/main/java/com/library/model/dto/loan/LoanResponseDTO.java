@@ -6,6 +6,8 @@ public class LoanResponseDTO {
   private long id;
   private String userEmail;
   private String bookIsbn;
+  private String bookTitle;
+  private String bookAuthor;
   private boolean isActive;
   private LocalDate loanDate;
   private LocalDate expectedReturnDate;
@@ -33,6 +35,22 @@ public class LoanResponseDTO {
 
   public void setBookIsbn(String bookIsbn) {
     this.bookIsbn = bookIsbn;
+  }
+
+  public String getBookTitle() {
+    return bookTitle;
+  }
+
+  public void setBookTitle(String bookTitle) {
+    this.bookTitle = bookTitle;
+  }
+
+  public String getBookAuthor() {
+    return bookAuthor;
+  }
+
+  public void setBookAuthor(String bookAuthor) {
+    this.bookAuthor = bookAuthor;
   }
 
   public boolean isActive() {
@@ -69,10 +87,12 @@ public class LoanResponseDTO {
 
   public LoanResponseDTO() {}
 
-  public LoanResponseDTO(long id, String userEmail, String bookIsbn, boolean isActive, LocalDate loanDate, LocalDate expectedReturnDate, LocalDate actualReturnDate) {
+  public LoanResponseDTO(long id, String userEmail, String bookIsbn, String bookTitle, String bookAuthor, boolean isActive, LocalDate loanDate, LocalDate expectedReturnDate, LocalDate actualReturnDate) {
     this.id = id;
     this.userEmail = userEmail;
     this.bookIsbn = bookIsbn;
+    this.bookTitle = bookTitle;
+    this.bookAuthor = bookAuthor;
     this.isActive = isActive;
     this.loanDate = loanDate;
     this.expectedReturnDate = expectedReturnDate;
