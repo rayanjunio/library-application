@@ -1,33 +1,27 @@
 package com.library.model.dao;
 
 import com.library.model.entity.Loan;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class LoanDAO {
   @Inject
   EntityManager entityManager;
 
-  @Transactional
   public void save(Loan loan) {
     entityManager.persist(loan);
   }
 
-  @Transactional
   public Loan merge(Loan loan) {
     return entityManager.merge(loan);
   }
 
-  @Transactional
-  public void delete(long id) {
-    Loan loan = this.findById(id);
-
-    if(loan != null) entityManager.remove(loan);
+  public void delete(Loan loan) {
+    this.entityManager.remove(loan);
   }
 
   public Loan findById(long id) {

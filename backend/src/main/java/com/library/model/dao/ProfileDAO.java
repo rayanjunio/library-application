@@ -3,29 +3,21 @@ package com.library.model.dao;
 import com.library.model.entity.Profile;
 import com.library.model.enums.Role;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
-@ApplicationScoped
+@RequestScoped
 public class ProfileDAO implements PanacheRepository<Profile> {
   @Inject
   EntityManager entityManager;
 
-  @Transactional
   public void save(Profile profile) {
     entityManager.persist(profile);
   }
 
-  @Transactional
-  public Profile merge(Profile profile) {
-    return entityManager.merge(profile);
-  }
-
-  @Transactional
   public void delete(Profile profile) {
     entityManager.remove(profile);
   }

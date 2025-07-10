@@ -2,30 +2,26 @@ package com.library.model.dao;
 
 import com.library.model.entity.Book;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@ApplicationScoped
+@RequestScoped
 public class BookDAO implements PanacheRepository<Book> {
   @Inject
   EntityManager entityManager;
 
-  @Transactional
   public void save(Book book) {
     entityManager.persist(book);
   }
 
-  @Transactional
   public Book merge(Book book) {
     return entityManager.merge(book);
   }
 
-  @Transactional
   public void delete(Book book) {
     entityManager.remove(book);
   }

@@ -2,33 +2,27 @@ package com.library.model.dao;
 
 import com.library.model.entity.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
-@ApplicationScoped
+@RequestScoped
 public class UserDAO implements PanacheRepository<User> {
   @Inject
   EntityManager entityManager;
 
-  @Transactional
   public void save(User user) {
     entityManager.persist(user);
   }
 
-  @Transactional
   public User merge(User user) {
     return entityManager.merge(user);
   }
 
-  @Transactional
-  public void delete(long id) {
-    User user = this.findById(id);
-
-    if(user != null) entityManager.remove(user);
+  public void delete(User user) {
+    this.entityManager.remove(user);
   }
 
   public Optional<User> findByEmail(String email) {
