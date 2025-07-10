@@ -11,14 +11,15 @@ import com.library.model.entity.Book;
 import com.library.model.entity.Loan;
 import com.library.model.entity.User;
 import com.library.model.enums.UserStatus;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 
-@ApplicationScoped
+@RequestScoped
 public class LoanBO {
 
   @Inject
@@ -33,6 +34,7 @@ public class LoanBO {
   @Inject
   LoanMapper loanMapper;
 
+  @Transactional
   public LoanResponseDTO createLoan(LoanRequestDTO loanRequestDTO) {
     if(loanRequestDTO.getExpectedReturnDate().isBefore(LocalDate.now())) {
       throw new BusinessException("The expected return date must be after today", 400);
@@ -84,6 +86,7 @@ public class LoanBO {
     return loanMapper.toDto(loan);
   }
 
+  @Transactional
   public LoanResponseDTO finishLoan(int loanId) {
     Loan loan = loanDAO.findById(loanId);
     if(loan == null) {
@@ -102,6 +105,7 @@ public class LoanBO {
     return loanMapper.toDto(loan);
   }
 
+  @Transactional
   public void removeUserFine(String email) {
     Optional<User> userExists = userDAO.findByEmail(email);
     if(userExists.isEmpty()) {

@@ -6,6 +6,7 @@ import com.library.model.entity.Log;
 import com.library.model.mapper.LogMapper;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @RequestScoped
 public class LogBO {
@@ -16,6 +17,7 @@ public class LogBO {
   @Inject
   LogMapper logMapper;
 
+  @Transactional
   public void create(LogDTO logDTO) {
     Log log = logMapper.toEntity(logDTO);
     logDAO.save(log);

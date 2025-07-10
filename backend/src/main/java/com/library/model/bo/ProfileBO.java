@@ -7,10 +7,11 @@ import com.library.model.dto.profile.ProfileResponseDTO;
 import com.library.model.mapper.ProfileMapper;
 import com.library.model.entity.Profile;
 import com.library.model.enums.Role;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
-@ApplicationScoped
+@RequestScoped
 public class ProfileBO {
   @Inject
   ProfileDAO profileDAO;
@@ -18,6 +19,7 @@ public class ProfileBO {
   @Inject
   ProfileMapper mapper;
 
+  @Transactional
   public ProfileResponseDTO createProfile(ProfileRequestDTO profileRequestDTO) {
     if(profileRequestDTO.getRole() != Role.ADMIN && profileRequestDTO.getRole() != Role.MEMBER) {
       throw new BusinessException("Only ADMIN and MEMBER roles are valid", 400);

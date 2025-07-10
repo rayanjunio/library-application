@@ -4,7 +4,6 @@ import com.library.exception.type.BusinessException;
 import com.library.model.dao.LoanDAO;
 import com.library.model.dao.ProfileDAO;
 import com.library.model.dao.UserDAO;
-import com.library.model.dto.log.LogDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;
@@ -15,16 +14,15 @@ import com.library.model.entity.User;
 import com.library.model.enums.UserStatus;
 import com.library.security.JwtContext;
 import io.quarkus.elytron.security.common.BcryptUtil;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
+@RequestScoped
 public class UserBO {
   @Inject
   UserDAO userDAO;
@@ -44,16 +42,15 @@ public class UserBO {
   @Inject
   JwtContext jwtContext;
 
+  @Transactional
   public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
     Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
 
     if (userExists.isPresent()) {
-      logBO.create(new LogDTO("POST /users", -1L, 400, LocalDateTime.now()));
       throw new BusinessException("This email already is registered", 400);
     }
 
     if (userDAO.findByCpf(userRequestDTO.getCpf()).isPresent()) {
-      logBO.create(new LogDTO("POST /users", -1L, 400, LocalDateTime.now()));
       throw new BusinessException("This CPF already is registered", 400);
     }
 
@@ -64,7 +61,6 @@ public class UserBO {
       profileExists = profileDAO.findByRole("ADMIN");
 
       if (profileExists.isEmpty()) {
-        logBO.create(new LogDTO("POST /users", -1L, 400, LocalDateTime.now()));
         throw new BusinessException("ADMIN profile does not exist", 400);
       }
       user.setProfile(profileExists.get());
@@ -72,7 +68,6 @@ public class UserBO {
       profileExists = profileDAO.findByRole("MEMBER");
 
       if (profileExists.isEmpty()) {
-        logBO.create(new LogDTO("POST /users", -1L, 400, LocalDateTime.now()));
         throw new BusinessException("MEMBER profile does not exist", 400);
       }
       user.setProfile(profileExists.get());
@@ -82,11 +77,10 @@ public class UserBO {
     user.setStatus(UserStatus.ACTIVE);
     userDAO.save(user);
 
-    logBO.create(new LogDTO("POST /users", user.getId(), 201, LocalDateTime.now()));
-
     return mapper.toDTO(user);
   }
 
+  @Transactional
   public UserResponseDTO createAdminUser(UserRequestDTO userRequestDTO) {
     Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
 
@@ -128,6 +122,7 @@ public class UserBO {
             .collect(Collectors.toList());
   }
 
+  @Transactional
   public UserResponseDTO updateUser(long id, UserUpdateDTO userUpdateDTO) {
     if (jwtContext.getUserId() != id) {
       throw new BusinessException("You are forbidden to access this content", 403);
@@ -165,6 +160,7 @@ public class UserBO {
     return mapper.toDTO(user);
   }
 
+  @Transactional
   public void deleteUser(long id) {
     if (jwtContext.getUserId() != id) {
       throw new BusinessException("You are forbidden to access this content", 403);
@@ -179,9 +175,10 @@ public class UserBO {
       throw new BusinessException("User not found", 404);
     }
 
-    userDAO.delete(id);
+    userDAO.delete(user);
   }
 
+  @Transactional
   public void changePassword(ChangePasswordDTO dto) {
     User user = userDAO.findById(jwtContext.getUserId());
 

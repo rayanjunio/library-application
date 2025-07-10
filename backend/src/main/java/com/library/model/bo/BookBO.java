@@ -7,7 +7,7 @@ import com.library.model.dto.book.BookUpdateDTO;
 import com.library.model.dto.book.BookResponseDTO;
 import com.library.model.mapper.BookMapper;
 import com.library.model.entity.Book;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
+@RequestScoped
 public class BookBO {
 
     @Inject
