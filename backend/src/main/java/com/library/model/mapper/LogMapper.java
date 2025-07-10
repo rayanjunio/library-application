@@ -11,12 +11,11 @@ public class LogMapper {
     Log log = new Log();
     log.setAction(logDTO.getAction());
     log.setUserId(logDTO.getUserId());
-    log.setStatus(logDTO.getStatus());
     log.setTimestamp(logDTO.getTimestamp());
     return log;
   }
 
   public LogDTO toDTO(Log log) {
-    return new LogDTO(log.getAction(), log.getUserId(), log.getStatus(), log.getTimestamp());
+    return new LogDTO(log.getAction(), log.getUserId(), log.getTimestamp());
   }
 }

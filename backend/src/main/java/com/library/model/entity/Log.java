@@ -25,10 +25,6 @@ public class Log {
 
   @NotNull
   @Column
-  private int status;
-
-  @NotNull
-  @Column
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
   private LocalDateTime timestamp;
 
@@ -54,14 +50,6 @@ public class Log {
 
   public void setUserId(long userId) {
     this.userId = userId;
-  }
-
-  public int getStatus() {
-    return status;
-  }
-
-  public void setStatus(int status) {
-    this.status = status;
   }
 
   public LocalDateTime getTimestamp() {
