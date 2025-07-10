@@ -2,19 +2,21 @@ package com.library.security;
 
 import com.library.model.bo.LogBO;
 import com.library.model.dto.log.LogDTO;
+import io.smallrye.common.annotation.Blocking;
+import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.json.JsonNumber;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.ContainerResponseContext;
-import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.time.LocalDateTime;
 
 @Provider
-public class AuditFilter implements ContainerRequestFilter, ContainerResponseFilter {
+@Priority(1)
+@Blocking
+public class AuditFilter implements ContainerRequestFilter {
 
   @Inject
   LogBO logBO;
@@ -22,24 +24,16 @@ public class AuditFilter implements ContainerRequestFilter, ContainerResponseFil
   @Inject
   JsonWebToken jwt;
 
-  private final String REQUEST_TIME = "request-time";
-
   @Override
   public void filter(ContainerRequestContext requestContext) {
-    requestContext.setProperty(REQUEST_TIME, LocalDateTime.now());
-  }
-
-  @Override
-  public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-    if (jwt == null || !jwt.containsClaim("userId")) return;
-
     String action = requestContext.getMethod() + " " + requestContext.getUriInfo().getPath();
+    long userId = -1L;
 
-    JsonNumber jsonNumber = jwt.getClaim("userId");
-    long userId = jsonNumber.longValue();
-    int status = responseContext.getStatus();
-    LocalDateTime time = (LocalDateTime) requestContext.getProperty(REQUEST_TIME);
+    if (jwt != null && jwt.containsClaim("userId")) {
+      JsonNumber jsonNumber = jwt.getClaim("userId");
+      userId = jsonNumber.longValue();
+    }
 
-    logBO.create(new LogDTO(action, userId, status, time));
+    logBO.create(new LogDTO(action, userId, LocalDateTime.now()));
   }
 }
