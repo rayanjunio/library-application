@@ -1,11 +1,12 @@
 package com.library.model.dao;
 
 import com.library.model.entity.Loan;
+import com.library.model.enums.UserStatus;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RequestScoped
 public class LoanDAO {
@@ -28,20 +29,17 @@ public class LoanDAO {
     return entityManager.find(Loan.class, id);
   }
 
-  public List<Loan> findAllFromUser(long userId) {
-    return entityManager.createQuery("SELECT l FROM Loan l WHERE l.user.id = :userId ", Loan.class)
-            .setParameter("userId", userId)
-            .getResultList();
-  }
-
   public long countUserPendingLoans(long userId) {
     return entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE l.user.id = :userId AND l.actualReturnDate IS NULL", Long.class)
             .setParameter("userId", userId)
             .getSingleResult();
   }
 
-  public List<Loan> getPendingLoans() {
-    return entityManager.createQuery("SELECT l FROM Loan l WHERE l.actualReturnDate IS NULL", Loan.class)
-            .getResultList();
+  public void fineUsersWithPendingLoans() {
+    entityManager.createQuery("UPDATE User u SET status = :finedStatus " +
+                    "WHERE u IN (SELECT l.user FROM Loan l WHERE l.expectedReturnDate < :today)")
+            .setParameter("finedStatus", UserStatus.FINED)
+            .setParameter("today", LocalDate.of(2025, 7, 12)) // this date must be set to LocalDate.now()
+            .executeUpdate();
   }
 }
