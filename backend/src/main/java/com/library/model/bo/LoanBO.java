@@ -119,4 +119,9 @@ public class LoanBO {
       userDAO.merge(user);
     }
   }
+
+  @Transactional
+  public void fineUsersWithPendingLoans() {
+    loanDAO.fineUsersWithPendingLoans();
+  }
 }
