@@ -14,13 +14,14 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
-@Path("users")
+@Path("user")
 public class UserController {
 
   @Inject
   UserBO userBO;
 
   @POST
+  @Path("create")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(@Valid UserRequestDTO userRequestDTO) {
@@ -39,7 +40,7 @@ public class UserController {
   }
 
   @GET
-  @Path("/{id}")
+  @Path("get/{id}")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   public Response getUser(@PathParam("id") long id) {
@@ -48,6 +49,7 @@ public class UserController {
   }
 
   @GET
+  @Path("get-all")
   @RolesAllowed({ "ADMIN" })
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsers() {
@@ -56,7 +58,7 @@ public class UserController {
   }
 
   @PUT
-  @Path("/{id}")
+  @Path("update/{id}")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
@@ -66,7 +68,7 @@ public class UserController {
   }
 
   @DELETE
-  @Path("/{id}")
+  @Path("delete/{id}")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   public Response deleteUser(@PathParam("id") long id) {
       userBO.deleteUser(id);

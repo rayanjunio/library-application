@@ -11,14 +11,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("auth")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class AuthController {
   @Inject
   AuthService authService;
 
   @POST
   @Path(("login"))
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   public Response login(LoginRequestDTO loginRequestDTO) {
       String token = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
       return Response.status(Response.Status.OK).entity("{\"token\":\"" + token + "\"}").build();
