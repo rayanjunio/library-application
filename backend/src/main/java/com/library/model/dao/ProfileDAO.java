@@ -7,8 +7,6 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
-import java.util.Optional;
-
 @RequestScoped
 public class ProfileDAO implements PanacheRepository<Profile> {
   @Inject
@@ -22,11 +20,12 @@ public class ProfileDAO implements PanacheRepository<Profile> {
     entityManager.remove(profile);
   }
 
-  public Optional<Profile> findByRole(String roleName) {
+  public Profile findByRole(String roleName) {
     return entityManager.createQuery(
             "SELECT p FROM Profile p WHERE p.role = :role", Profile.class)
             .setParameter("role", Enum.valueOf(Role.class, roleName))
             .getResultStream()
-            .findFirst();
+            .findFirst()
+            .orElse(null);
   }
 }
