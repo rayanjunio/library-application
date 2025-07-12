@@ -1,6 +1,7 @@
 package com.library.model.dto.user;
 
 import com.library.model.dto.loan.LoanResponseDTO;
+import com.library.model.entity.User;
 import com.library.model.enums.UserStatus;
 
 import java.util.List;
@@ -14,15 +15,16 @@ public class UserResponseDTO {
   private String profile;
   private List<LoanResponseDTO> loans;
 
-  public UserResponseDTO() {}
-
-  public UserResponseDTO(long id, String name, String email, String cpf, UserStatus status, String profile, List<LoanResponseDTO> loans) {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.cpf = cpf;
-    this.status = status;
-    this.profile = profile;
+  public UserResponseDTO(User user) {
+    List<LoanResponseDTO> loans = user.getLoans().stream()
+            .map(LoanResponseDTO::new)
+            .toList();
+    this.id = user.getId();
+    this.name = user.getName();
+    this.email = user.getEmail();
+    this.cpf = user.getCpf();
+    this.status = user.getStatus();
+    this.profile = user.getProfile().getRole().name();
     this.loans = loans;
   }
 

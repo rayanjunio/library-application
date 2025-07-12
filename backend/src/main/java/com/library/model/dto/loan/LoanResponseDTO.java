@@ -1,5 +1,7 @@
 package com.library.model.dto.loan;
 
+import com.library.model.entity.Loan;
+
 import java.time.LocalDate;
 
 public class LoanResponseDTO {
@@ -12,6 +14,20 @@ public class LoanResponseDTO {
   private LocalDate loanDate;
   private LocalDate expectedReturnDate;
   private LocalDate actualReturnDate;
+
+  public LoanResponseDTO() {}
+
+  public LoanResponseDTO(Loan loan) {
+    this.id = loan.getId();
+    this.userEmail = loan.getUser().getEmail();
+    this.bookIsbn = loan.getBook().getIsbn();
+    this.bookTitle = loan.getBook().getTitle();
+    this.bookAuthor = loan.getBook().getAuthor();
+    this.isActive = loan.isActive();
+    this.loanDate = loan.getLoanDate();
+    this.expectedReturnDate = loan.getExpectedReturnDate();
+    this.actualReturnDate = loan.getActualReturnDate();
+  }
 
   public long getId() {
     return id;
@@ -82,20 +98,6 @@ public class LoanResponseDTO {
   }
 
   public void setActualReturnDate(LocalDate actualReturnDate) {
-    this.actualReturnDate = actualReturnDate;
-  }
-
-  public LoanResponseDTO() {}
-
-  public LoanResponseDTO(long id, String userEmail, String bookIsbn, String bookTitle, String bookAuthor, boolean isActive, LocalDate loanDate, LocalDate expectedReturnDate, LocalDate actualReturnDate) {
-    this.id = id;
-    this.userEmail = userEmail;
-    this.bookIsbn = bookIsbn;
-    this.bookTitle = bookTitle;
-    this.bookAuthor = bookAuthor;
-    this.isActive = isActive;
-    this.loanDate = loanDate;
-    this.expectedReturnDate = expectedReturnDate;
     this.actualReturnDate = actualReturnDate;
   }
 }

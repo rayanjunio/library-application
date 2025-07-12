@@ -15,6 +15,12 @@ public class Profile {
   @Enumerated(EnumType.STRING)
   private Role role;
 
+  public Profile() {}
+
+  public Profile(Role role) {
+    this.role = role;
+  }
+
   public long getId() {
     return id;
   }

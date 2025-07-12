@@ -1,5 +1,6 @@
 package com.library.model.entity;
 
+import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -42,6 +43,15 @@ public class User {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Loan> loans = new ArrayList<>();
+
+  public User() {}
+
+  public User(UserRequestDTO userRequestDTO) {
+    this.name = userRequestDTO.getName();
+    this.email = userRequestDTO.getEmail();
+    this.password = userRequestDTO.getPassword();
+    this.cpf = userRequestDTO.getCpf();
+  }
 
   public long getId() {
     return id;

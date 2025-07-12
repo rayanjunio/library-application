@@ -1,6 +1,7 @@
 package com.library.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.library.model.dto.log.LogDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +28,14 @@ public class Log {
   @Column
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
   private LocalDateTime timestamp;
+
+  public Log() {}
+
+  public Log(LogDTO logDTO) {
+    this.action = logDTO.getAction();
+    this.userId = logDTO.getUserId();
+    this.timestamp = logDTO.getTimestamp();
+  }
 
   public long getId() {
     return id;

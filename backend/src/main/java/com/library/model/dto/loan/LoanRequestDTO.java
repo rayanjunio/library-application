@@ -19,12 +19,6 @@ public class LoanRequestDTO {
 
   public LoanRequestDTO() {}
 
-  public LoanRequestDTO(String userEmail, String bookIsbn, LocalDate expectedReturnDate) {
-    this.userEmail = userEmail;
-    this.bookIsbn = bookIsbn;
-    this.expectedReturnDate = expectedReturnDate;
-  }
-
   public String getUserEmail() {
     return userEmail;
   }

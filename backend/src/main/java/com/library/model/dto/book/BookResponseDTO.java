@@ -1,5 +1,7 @@
 package com.library.model.dto.book;
 
+import com.library.model.entity.Book;
+
 public class BookResponseDTO {
   private Long id;
   private String isbn;
@@ -10,13 +12,13 @@ public class BookResponseDTO {
 
   public BookResponseDTO() {}
 
-  public BookResponseDTO(Long id, String isbn, String title, String author, Integer quantity, Integer availableQuantity) {
-    this.id = id;
-    this.isbn = isbn;
-    this.title = title;
-    this.author = author;
-    this.quantity = quantity;
-    this.availableQuantity = availableQuantity;
+  public BookResponseDTO(Book book) {
+    this.id = book.getId();
+    this.isbn = book.getIsbn();
+    this.title = book.getTitle();
+    this.author = book.getAuthor();
+    this.quantity = book.getQuantity();
+    this.availableQuantity = book.getAvailableQuantity();
   }
 
   public Long getId() {

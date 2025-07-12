@@ -24,13 +24,6 @@ public class UserRequestDTO {
 
   public UserRequestDTO() {}
 
-  public UserRequestDTO(String name, String email, String password, String cpf) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.cpf = cpf;
-  }
-
   public String getName() {
     return name;
   }

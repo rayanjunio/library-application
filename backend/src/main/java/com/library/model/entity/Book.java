@@ -1,5 +1,6 @@
 package com.library.model.entity;
 
+import com.library.model.dto.book.BookCreateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -32,6 +33,16 @@ public class Book {
 
   @OneToMany(mappedBy = "book")
   private List<Loan> loans;
+
+  public Book() {}
+
+  public Book(BookCreateDTO bookCreateDTO) {
+    this.isbn = bookCreateDTO.getIsbn();
+    this.title = bookCreateDTO.getTitle();
+    this.author = bookCreateDTO.getAuthor();
+    this.quantity = bookCreateDTO.getQuantity();
+    this.availableQuantity = bookCreateDTO.getQuantity();
+  }
 
   public long getId() {
     return id;

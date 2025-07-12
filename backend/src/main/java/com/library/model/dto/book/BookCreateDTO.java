@@ -20,12 +20,6 @@ public class BookCreateDTO {
 
   public BookCreateDTO() {}
 
-  public BookCreateDTO(String title, String author, int quantity) {
-    this.title = title;
-    this.author = author;
-    this.quantity = quantity;
-  }
-
   public String getIsbn() {
     return isbn;
   }

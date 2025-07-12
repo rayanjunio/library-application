@@ -27,6 +27,14 @@ public class Loan {
 
   private LocalDate actualReturnDate;
 
+  public Loan() {}
+
+  public Loan(LocalDate expectedReturnDate) {
+    this.isActive = true;
+    this.expectedReturnDate = expectedReturnDate;
+    this.setActualReturnDate(null);
+  }
+
   public long getId() {
     return id;
   }

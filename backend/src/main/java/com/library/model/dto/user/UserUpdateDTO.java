@@ -16,12 +16,6 @@ public class UserUpdateDTO {
 
     public UserUpdateDTO() {}
 
-    public UserUpdateDTO(String name, String email, String cpf) {
-        this.name = name;
-        this.email = email;
-        this.cpf = cpf;
-    }
-
     public String getName() {
         return name;
     }
