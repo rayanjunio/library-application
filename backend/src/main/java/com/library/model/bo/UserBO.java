@@ -8,7 +8,6 @@ import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;
 import com.library.model.dto.user.UserResponseDTO;
-import com.library.model.mapper.UserMapper;
 import com.library.model.entity.Profile;
 import com.library.model.entity.User;
 import com.library.model.enums.UserStatus;
@@ -31,13 +30,10 @@ public class UserBO {
   ProfileDAO profileDAO;
 
   @Inject
+  ProfileBO profileBO;
+
+  @Inject
   LoanDAO loanDAO;
-
-  @Inject
-  UserMapper mapper;
-
-  @Inject
-  LogBO logBO;
 
   @Inject
   JwtContext jwtContext;
@@ -54,30 +50,24 @@ public class UserBO {
       throw new BusinessException("This CPF already is registered", 400);
     }
 
-    User user = mapper.toEntity(userRequestDTO);
-    Optional<Profile> profileExists;
+    User user = new User(userRequestDTO);
+    Profile profile;
 
     if (userDAO.count() == 0) {
-      profileExists = profileDAO.findByRole("ADMIN");
+      profile = profileDAO.findByRole("ADMIN");
+      if (profile == null) profile = profileBO.createAdminProfile();
 
-      if (profileExists.isEmpty()) {
-        throw new BusinessException("ADMIN profile does not exist", 400);
-      }
-      user.setProfile(profileExists.get());
     } else {
-      profileExists = profileDAO.findByRole("MEMBER");
-
-      if (profileExists.isEmpty()) {
-        throw new BusinessException("MEMBER profile does not exist", 400);
-      }
-      user.setProfile(profileExists.get());
+      profile = profileDAO.findByRole("MEMBER");
+      if (profile == null) profile = profileBO.createMemberProfile();
     }
 
+    user.setProfile(profile);
     user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
     user.setStatus(UserStatus.ACTIVE);
     userDAO.save(user);
 
-    return mapper.toDTO(user);
+    return new UserResponseDTO(user);
   }
 
   @Transactional
@@ -92,17 +82,15 @@ public class UserBO {
       throw new BusinessException("This CPF already is registered", 400);
     }
 
-    User user = mapper.toEntity(userRequestDTO);
+    User user = new User(userRequestDTO);
+    Profile profile = profileDAO.findByRole("ADMIN");
 
-    Profile profile = profileDAO.findByRole("ADMIN")
-            .orElseThrow(() -> new BusinessException("ADMIN profile does not exist", 400));
     user.setProfile(profile);
-
     user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
     user.setStatus(UserStatus.ACTIVE);
     userDAO.save(user);
 
-    return mapper.toDTO(user);
+    return new UserResponseDTO(user);
   }
 
   public UserResponseDTO getUser(long id) {
@@ -112,13 +100,14 @@ public class UserBO {
 
     User user = userDAO.findByIdWithLoans(id)
             .orElseThrow(() -> new BusinessException("User not found", 404));
-    return mapper.toDTO(user);
+
+    return new UserResponseDTO(user);
   }
 
   @Transactional
   public List<UserResponseDTO> getAllUsers() {
     return userDAO.findAll().stream()
-            .map(mapper::toDTO)
+            .map(UserResponseDTO::new)
             .collect(Collectors.toList());
   }
 
@@ -157,7 +146,7 @@ public class UserBO {
     }
 
     userDAO.merge(user);
-    return mapper.toDTO(user);
+    return new UserResponseDTO(user);
   }
 
   @Transactional

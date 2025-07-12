@@ -5,7 +5,6 @@ import com.library.model.dao.BookDAO;
 import com.library.model.dto.book.BookCreateDTO;
 import com.library.model.dto.book.BookUpdateDTO;
 import com.library.model.dto.book.BookResponseDTO;
-import com.library.model.mapper.BookMapper;
 import com.library.model.entity.Book;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -21,9 +20,6 @@ public class BookBO {
     @Inject
     BookDAO bookDAO;
 
-    @Inject
-    BookMapper bookMapper;
-
     @Transactional
     public BookResponseDTO create(BookCreateDTO bookCreateDTO) {
         Optional<Book> bookExists = bookDAO.findByIsbn(bookCreateDTO.getIsbn());
@@ -32,15 +28,16 @@ public class BookBO {
             throw new BusinessException("This book already exists", 400);
         }
 
-        Book book = bookMapper.toEntity(bookCreateDTO);
+        Book book = new Book(bookCreateDTO);
         book.setAvailableQuantity(book.getQuantity());
         bookDAO.save(book);
-        return bookMapper.toDTO(book);
+
+        return new BookResponseDTO(book);
     }
 
     public List<BookResponseDTO> findAll() {
         return bookDAO.findAllBooks().stream()
-                .map(bookMapper::toDTO)
+                .map(BookResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -49,14 +46,14 @@ public class BookBO {
         if(book.isEmpty()) {
             throw new BusinessException("This book does not exist", 400);
         }
-        return bookMapper.toDTO(book.get());
+        return new BookResponseDTO(book.get());
     }
 
     public List<BookResponseDTO> findAvailableBooks() {
         List<Book> books = bookDAO.findAvailableBooks(10);
 
         return books.stream()
-                .map(book -> bookMapper.toDTO(book))
+                .map(BookResponseDTO::new)
                 .toList();
     }
 
@@ -79,7 +76,7 @@ public class BookBO {
         }
         
         book = bookDAO.merge(book);
-        return bookMapper.toDTO(book);
+        return new BookResponseDTO(book);
     }
 
     @Transactional

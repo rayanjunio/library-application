@@ -6,7 +6,6 @@ import com.library.model.dao.LoanDAO;
 import com.library.model.dao.UserDAO;
 import com.library.model.dto.loan.LoanRequestDTO;
 import com.library.model.dto.loan.LoanResponseDTO;
-import com.library.model.mapper.LoanMapper;
 import com.library.model.entity.Book;
 import com.library.model.entity.Loan;
 import com.library.model.entity.User;
@@ -30,9 +29,6 @@ public class LoanBO {
 
   @Inject
   LoanDAO loanDAO;
-
-  @Inject
-  LoanMapper loanMapper;
 
   @Transactional
   public LoanResponseDTO createLoan(LoanRequestDTO loanRequestDTO) {
@@ -78,12 +74,13 @@ public class LoanBO {
     book.setAvailableQuantity(book.getAvailableQuantity() - 1);
     bookDAO.merge(book);
 
-    Loan loan = loanMapper.toEntity(loanRequestDTO);
+    Loan loan = new Loan(loanRequestDTO.getExpectedReturnDate());
     loan.setUser(user);
     loan.setBook(book);
     loan.setLoanDate(LocalDate.now());
+
     loanDAO.save(loan);
-    return loanMapper.toDto(loan);
+    return new LoanResponseDTO(loan);
   }
 
   @Transactional
@@ -102,7 +99,7 @@ public class LoanBO {
     bookDAO.merge(book);
     loanDAO.merge(loan);
 
-    return loanMapper.toDto(loan);
+    return new LoanResponseDTO(loan);
   }
 
   @Transactional
