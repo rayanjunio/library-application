@@ -37,7 +37,7 @@ public class LoanDAO {
 
   public void fineUsersWithPendingLoans() {
     entityManager.createQuery("UPDATE User u SET status = :finedStatus " +
-                    "WHERE u IN (SELECT l.user FROM Loan l WHERE l.expectedReturnDate < :today)")
+                    "WHERE u IN (SELECT l.user FROM Loan l WHERE l.expectedReturnDate < :today AND l.isActive = true)")
             .setParameter("finedStatus", UserStatus.FINED)
             .setParameter("today", LocalDate.of(2025, 7, 12)) // this date must be set to LocalDate.now()
             .executeUpdate();
