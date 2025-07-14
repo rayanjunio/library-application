@@ -13,7 +13,7 @@ public class TokenService {
     String role = userTokenInfoDTO.getRole().toString();
     Set<String> groups = role.equalsIgnoreCase("ADMIN") ? Set.of("ADMIN") : Set.of("MEMBER");
 
-    return Jwt.issuer("https://localhost:8080")
+    return Jwt.issuer("http://localhost:8080")
             .subject(userTokenInfoDTO.getEmail())
             .groups(groups)
             .claim("userId", userTokenInfoDTO.getId())

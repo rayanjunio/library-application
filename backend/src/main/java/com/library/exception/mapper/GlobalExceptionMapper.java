@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import org.eclipse.microprofile.context.ManagedExecutor;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,9 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
   RequestLogContextDTO context;
 
   @Inject
+  ManagedExecutor managedExecutor;
+
+  @Inject
   LogBO logBO;
 
   private final int STATUS = 500;
@@ -26,7 +30,10 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
   @Override
   public Response toResponse(Throwable throwable) {
     String action = "ERROR: " + throwable.getClass().getSimpleName() + " at " + context.getAction();
-    logBO.create(new LogDTO(action, context.getUserId(), LocalDateTime.now()));
+
+    managedExecutor.runAsync(() -> {
+      logBO.create(new LogDTO(action, context.getUserId(), LocalDateTime.now()));
+    });
 
     throwable.printStackTrace();
     ErrorResponse error = new ErrorResponse(STATUS, MESSAGE);

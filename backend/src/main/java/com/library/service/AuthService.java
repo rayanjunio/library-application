@@ -7,6 +7,7 @@ import com.library.model.entity.User;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.NewCookie;
 
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class AuthService {
   @Inject
   TokenService tokenService;
 
-  public String authenticate(String email, String password) {
+  public NewCookie authenticate(String email, String password) {
     Optional<User> user = userDAO.findByEmail(email.trim());
 
     if(user.isEmpty() || !BcryptUtil.matches(password, user.get().getPassword())) {
@@ -27,7 +28,15 @@ public class AuthService {
     }
 
     UserTokenInfoDTO userTokenInfoDTO = new UserTokenInfoDTO(user.get().getId(), email, user.get().getProfile().getRole());
+    String token = tokenService.generateToken(userTokenInfoDTO);
 
-    return tokenService.generateToken(userTokenInfoDTO);
+    return new NewCookie.Builder("jwt")
+            .value(token)
+            .path("/")
+            .maxAge(3600)
+            .httpOnly(true)
+            .secure(false)
+            .sameSite(NewCookie.SameSite.LAX)
+            .build();
   }
 }
