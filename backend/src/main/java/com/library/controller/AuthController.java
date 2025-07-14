@@ -8,6 +8,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
 @Path("auth")
@@ -20,7 +21,7 @@ public class AuthController {
   @POST
   @Path(("login"))
   public Response login(LoginRequestDTO loginRequestDTO) {
-      String token = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
-      return Response.status(Response.Status.OK).entity("{\"token\":\"" + token + "\"}").build();
+      NewCookie jwtCookie = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
+      return Response.status(Response.Status.NO_CONTENT).cookie(jwtCookie).build();
   }
 }
