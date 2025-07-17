@@ -43,4 +43,9 @@ public class UserDAO implements PanacheRepository<User> {
   public Optional<User> findByCpf(String cpf) {
     return find("cpf", cpf).firstResultOptional();
   }
+
+  public long countAllUsers() {
+    return entityManager.createQuery("SELECT COUNT(u) FROM User u", Long.class)
+            .getSingleResult();
+  }
 }

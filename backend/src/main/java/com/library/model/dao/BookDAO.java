@@ -39,4 +39,14 @@ public class BookDAO implements PanacheRepository<Book> {
   public List<Book> findAllBooks() {
     return findAll().stream().toList();
   }
+
+  public long countAvailableBooks() {
+    return entityManager.createQuery("SELECT COUNT(b) FROM Book b WHERE b.availableQuantity > 0", Long.class)
+            .getSingleResult();
+  }
+
+  public long countAllBooks() {
+    return entityManager.createQuery("SELECT COUNT(b) FROM Book b", Long.class)
+            .getSingleResult();
+  }
 }

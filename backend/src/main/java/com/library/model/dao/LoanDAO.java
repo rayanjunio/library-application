@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RequestScoped
 public class LoanDAO {
@@ -33,6 +34,35 @@ public class LoanDAO {
     return entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE l.user.id = :userId AND l.actualReturnDate IS NULL", Long.class)
             .setParameter("userId", userId)
             .getSingleResult();
+  }
+
+  public long countUserActiveLoans(long userId) {
+    return entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE l.user.id = :userId AND l.isActive = true", Long.class)
+            .setParameter("userId", userId)
+            .getSingleResult();
+  }
+
+  public long countAllActiveLoans() {
+    return entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE l.isActive = true", Long.class)
+            .getSingleResult();
+  }
+
+  public long countUserActiveLoansExcluding(long loanId, long userId) {
+    return entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE l.user.id = :userId AND l.isActive = true AND l.id != :loanId ", Long.class)
+            .setParameter("userId", userId)
+            .setParameter("loanId", loanId)
+            .getSingleResult();
+  }
+
+  public List<Loan> getUserActiveLoans(long userId) {
+    return entityManager.createQuery("SELECT l FROM Loan l WHERE l.user.id = :userId AND l.isActive = true", Loan.class)
+            .setParameter("userId", userId)
+            .getResultList();
+  }
+
+  public List<Loan> getActiveLoans() {
+    return entityManager.createQuery("SELECT l FROM Loan l WHERE l.isActive = true", Loan.class)
+            .getResultList();
   }
 
   public void fineUsersWithPendingLoans() {
