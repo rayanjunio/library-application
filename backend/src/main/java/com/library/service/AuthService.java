@@ -29,11 +29,21 @@ public class AuthService {
 
     UserTokenInfoDTO userTokenInfoDTO = new UserTokenInfoDTO(user.get().getId(), email, user.get().getProfile().getRole());
     String token = tokenService.generateToken(userTokenInfoDTO);
-
     return new NewCookie.Builder("jwt")
             .value(token)
             .path("/")
             .maxAge(3600)
+            .httpOnly(true)
+            .secure(false)
+            .sameSite(NewCookie.SameSite.LAX)
+            .build();
+  }
+
+  public NewCookie logout() {
+    return new NewCookie.Builder("jwt")
+            .value("")
+            .path("/")
+            .maxAge(0)
             .httpOnly(true)
             .secure(false)
             .sameSite(NewCookie.SameSite.LAX)
