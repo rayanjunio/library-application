@@ -1,4 +1,4 @@
-package com.library.controller;
+package com.library.controller.api;
 
 import com.library.model.bo.BookBO;
 import com.library.model.dto.book.BookCreateDTO;
@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.Map;
 
 @Path("book")
 public class BookController {
@@ -70,5 +71,21 @@ public class BookController {
     public Response delete(@PathParam("isbn") String isbn) {
         bookBO.delete(isbn);
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("count-available")
+    @RolesAllowed({ "ADMIN", "MEMBER" })
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response countAvailableBooks() {
+        return Response.ok(Map.of("availableBooksCount", bookBO.countAvailableBooks())).build();
+    }
+
+    @GET
+    @Path("count-all")
+    @RolesAllowed({ "ADMIN", "MEMBER" })
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response countAllBooks() {
+        return Response.ok(Map.of("allBooksCount", bookBO.countAllBooks())).build();
     }
 } 
