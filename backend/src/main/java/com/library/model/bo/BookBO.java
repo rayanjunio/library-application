@@ -72,7 +72,7 @@ public class BookBO {
         if(bookUpdateDTO.getQuantity() != null) {
             int activeLoans = book.getQuantity() - book.getAvailableQuantity();
             book.setQuantity(bookUpdateDTO.getQuantity());
-            book.setAvailableQuantity(activeLoans + book.getQuantity());
+            book.setAvailableQuantity(book.getQuantity() - activeLoans);
         }
         
         book = bookDAO.merge(book);
@@ -87,5 +87,13 @@ public class BookBO {
         }
 
         bookDAO.delete(book.get());
+    }
+
+    public long countAvailableBooks() {
+        return bookDAO.countAvailableBooks();
+    }
+
+    public long countAllBooks() {
+        return bookDAO.countAllBooks();
     }
 } 

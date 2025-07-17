@@ -186,4 +186,8 @@ public class UserBO {
     user.setPassword(BcryptUtil.bcryptHash(dto.getNewPassword()));
     userDAO.merge(user);
   }
+
+  public long countAllUsers() {
+    return userDAO.countAllUsers();
+  }
 }
