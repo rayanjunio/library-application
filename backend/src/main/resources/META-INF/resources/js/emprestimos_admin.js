@@ -1,0 +1,154 @@
+// JS para gerenciamento de empréstimos
+window.addEventListener('DOMContentLoaded', () => {
+    const alertArea = document.getElementById('alert-area');
+    const tabelaEmprestimos = document.getElementById('tabelaEmprestimos');
+    const btnLogout = document.getElementById('btn-logout');
+    const formEmprestimo = document.getElementById('formEmprestimo');
+
+    btnLogout?.addEventListener('click', async () => {
+        try {
+            await fetch('/auth/logout', {
+                method: 'POST',
+                credentials: 'include'
+            })
+            window.location.href = '/';
+        } catch (err) {
+            console.error('Erro no logout:', err);
+            window.location.href = '/';
+        }
+    });
+
+    function showAlert(message, type = 'danger') {
+        alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    }
+
+    function clearAlert() {
+        alertArea.innerHTML = '';
+    }
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR');
+    };
+
+    const isEmprestimoAtivo = (emp) => {
+        return emp.active === true;
+    };
+
+    const exibirEmprestimos = (emprestimos = []) => {
+        tabelaEmprestimos.innerHTML = '';
+
+        if (!emprestimos.length) {
+            tabelaEmprestimos.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        Nenhum empréstimo encontrado.
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        emprestimos.forEach(emp => {
+            const ativo = isEmprestimoAtivo(emp);
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td>${emp.id}</td>
+                <td>${emp.userEmail}</td>
+                <td>
+                    <strong>${emp.bookTitle || 'Livro não encontrado'}</strong>
+                    ${emp.bookAuthor ? `<br><small class="text-muted">${emp.bookAuthor}</small>` : ''}
+                    <br><small class="text-muted">ISBN: ${emp.bookIsbn}</small>
+                </td>
+                <td>${formatDate(emp.loanDate)}</td>
+                <td>${formatDate(emp.expectedReturnDate)}</td>
+                <td>
+                    <span class="badge bg-${ativo ? 'success' : 'secondary'}">
+                        ${ativo ? 'Ativo' : 'Finalizado'}
+                    </span>
+                </td>
+                <td>
+                    ${ativo
+                ? `<button class="btn btn-sm btn-outline-success" data-finalizar-id="${emp.id}">
+                            <i class="bi bi-check2-circle"></i> Finalizar
+                        </button>`
+                : '<span class="text-muted">-</span>'}
+                </td>
+            `;
+            tabelaEmprestimos.appendChild(row);
+        });
+
+        document.querySelectorAll('[data-finalizar-id]').forEach(button => {
+            button.addEventListener('click', () => finalizarEmprestimo(button.dataset.finalizarId));
+        });
+    };
+
+    const carregarEmprestimos = async () => {
+        try {
+            const res = await fetch('/loan/get-all', {credentials: 'include'});
+            if (!res.ok) throw new Error('Erro ao carregar empréstimos');
+
+            const {activeLoans} = await res.json();
+
+            exibirEmprestimos(activeLoans);
+        } catch {
+            showAlert('Erro ao carregar empréstimos');
+        }
+    };
+
+    const finalizarEmprestimo = async (id) => {
+        if (!confirm('Tem certeza que deseja finalizar este empréstimo?')) return;
+
+        try {
+            const res = await fetch(`/loan/finish/${id}`, {
+                method: 'PUT',
+                credentials: 'include'
+            });
+
+            if (!res.ok) throw new Error(await res.text());
+
+            showAlert('Empréstimo finalizado com sucesso!', 'success');
+            await carregarEmprestimos();
+        } catch (err) {
+            showAlert(`Erro ao finalizar empréstimo: ${err.message}`);
+        }
+    };
+
+    if (formEmprestimo) {
+        formEmprestimo.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const body = {
+                userEmail: document.getElementById('emailUsuario')?.value,
+                bookIsbn: document.getElementById('isbnLivro')?.value,
+                expectedReturnDate: document.getElementById('dataDevolucao')?.value
+            };
+
+            try {
+                const res = await fetch('/loan/create', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) throw new Error(await res.text());
+
+                showAlert('Empréstimo criado com sucesso!', 'success');
+                formEmprestimo.reset();
+
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalEmprestimo'));
+                modal?.hide();
+
+                await carregarEmprestimos();
+            } catch (err) {
+                showAlert('Erro ao criar empréstimo: ' + err.message);
+            }
+        });
+    }
+    carregarEmprestimos();
+});
