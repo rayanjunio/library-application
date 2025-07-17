@@ -27,6 +27,11 @@ public class AuditResponseFilter implements ContainerResponseFilter {
   @Override
   public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
     if (responseContext.getStatus() < 500) {
+      String path = requestContext.getUriInfo().getPath();
+
+      if(path.startsWith(".well-known") || path.contains("devtools") || path.contains("chrome")) {
+        return;
+      }
 
       String action = context.getAction();
       managedExecutor.runAsync(() -> {
