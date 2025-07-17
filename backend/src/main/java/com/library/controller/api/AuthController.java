@@ -1,7 +1,8 @@
-package com.library.controller;
+package com.library.controller.api;
 
 import com.library.service.AuthService;
 import com.library.model.dto.auth.LoginRequestDTO;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -23,5 +24,13 @@ public class AuthController {
   public Response login(LoginRequestDTO loginRequestDTO) {
       NewCookie jwtCookie = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
       return Response.status(Response.Status.NO_CONTENT).cookie(jwtCookie).build();
+  }
+
+  @POST
+  @Path(("logout"))
+  @RolesAllowed({ "ADMIN", "MEMBER" })
+  public Response logout() {
+    NewCookie expiredCookie = authService.logout();
+    return Response.status(Response.Status.OK).cookie(expiredCookie).build();
   }
 }
