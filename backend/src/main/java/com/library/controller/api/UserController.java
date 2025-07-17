@@ -1,10 +1,12 @@
-package com.library.controller;
+package com.library.controller.api;
 
 import com.library.model.bo.UserBO;
+import com.library.model.dto.auth.UserTokenInfoDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;
 import com.library.model.dto.user.UserResponseDTO;
+import com.library.security.JwtContext;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -13,12 +15,16 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.Map;
 
 @Path("user")
 public class UserController {
 
   @Inject
   UserBO userBO;
+
+  @Inject
+  JwtContext jwtContext;
 
   @POST
   @Path("create")
@@ -40,11 +46,12 @@ public class UserController {
   }
 
   @GET
-  @Path("get/{id}")
+  @Path("get")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getUser(@PathParam("id") long id) {
-      UserResponseDTO response = userBO.getUser(id);
+  public Response getUser() {
+      UserTokenInfoDTO userInfo = jwtContext.getUserInfo();
+      UserResponseDTO response = userBO.getUser(userInfo.getId());
       return Response.status(Response.Status.OK).entity(response).build();
   }
 
@@ -81,5 +88,13 @@ public class UserController {
   public Response changePassword(@Valid ChangePasswordDTO dto) {
       userBO.changePassword(dto);
       return Response.status(Response.Status.OK).build();
+  }
+
+  @GET
+  @Path("count-all")
+  @RolesAllowed({ "ADMIN" })
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response countAllUsers() {
+    return Response.ok(Map.of("usersCount", userBO.countAllUsers())).build();
   }
 }
