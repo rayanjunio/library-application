@@ -187,8 +187,35 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     window.showBookDetails = function (bookId) {
-        // Implementar modal de detalhes do livro se necessário
-        alert('Funcionalidade de detalhes do livro será implementada em breve!');
+        const book = (availableBooks || []).find(b => b.id === bookId);
+        if (!book) {
+            showAlert('Livro não encontrado!');
+            return;
+        }
+        fetch(`/book/get/${book.isbn}`, { credentials: 'include' })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao buscar detalhes do livro');
+                return response.json();
+            })
+            .then(data => {
+                const modalBody = document.getElementById('bookModalBody');
+                modalBody.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>${data.title}</h4>
+                            <p><strong>Autor:</strong> ${data.author || 'Não informado'}</p>
+                            <p><strong>ISBN:</strong> ${data.isbn}</p>
+                            <p><strong>Quantidade total:</strong> ${data.quantity}</p>
+                            <p><strong>Disponíveis:</strong> ${data.availableQuantity}</p>
+                        </div>
+                    </div>
+                `;
+                const modal = new bootstrap.Modal(document.getElementById('bookModal'));
+                modal.show();
+            })
+            .catch(error => {
+                showAlert('Erro ao carregar detalhes do livro: ' + error.message);
+            });
     };
 
     // Carregar livros ao iniciar
