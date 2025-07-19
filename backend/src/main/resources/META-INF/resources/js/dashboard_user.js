@@ -31,6 +31,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Botão Meus Dados
     const btnMeusDados = document.getElementById('btn-meus-dados');
+    function showAlert(message, type = 'danger') {
+        const alertArea = document.getElementById('alert-area');
+        if (!alertArea) {
+            alert(message);
+            return;
+        }
+        alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    }
     btnMeusDados?.addEventListener('click', async () => {
         try {
             const res = await fetch('/user/get', { credentials: 'include' });
@@ -49,7 +60,7 @@ window.addEventListener('DOMContentLoaded', function() {
             const modal = new bootstrap.Modal(document.getElementById('userModal'));
             modal.show();
         } catch (e) {
-            alert('Erro ao carregar dados do usuário: ' + e.message);
+            showAlert('Erro ao carregar dados do usuário: ' + e.message);
         }
     });
 }); 

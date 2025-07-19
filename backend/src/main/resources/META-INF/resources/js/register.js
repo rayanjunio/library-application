@@ -53,8 +53,20 @@ window.addEventListener('DOMContentLoaded', function() {
             });
 
             if (!response.ok) {
-                const error = await response.text();
-                throw new Error(error);
+                let errorMsg = 'Erro no cadastro';
+                try {
+                    const errorText = await response.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    errorMsg = 'Erro no cadastro';
+                }
+                showAlert(errorMsg);
+                return;
             }
 
             showAlert('Cadastro realizado com sucesso! Redirecionando para login...', 'success');

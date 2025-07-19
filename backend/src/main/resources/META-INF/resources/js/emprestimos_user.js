@@ -57,7 +57,7 @@ window.addEventListener('DOMContentLoaded', function() {
     fetch(`/loan/get-from-user`, { credentials: 'include' })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erro ao carregar dados do usuário');
+            return response.text().then(errorText => { throw new Error(errorText); });
         }
         return response.json();
     })
@@ -110,12 +110,23 @@ window.addEventListener('DOMContentLoaded', function() {
         }).join('');
     })
         .catch(error => {
+            let errorMsg = 'Erro ao carregar empréstimos';
+            try {
+                const errorJson = JSON.parse(error.message);
+                if (errorJson && errorJson.message) {
+                    errorMsg = errorJson.message;
+                } else {
+                    errorMsg = error.message;
+                }
+            } catch (e) {
+                errorMsg = error.message;
+            }
             emprestimosTbody.innerHTML = `
             <tr>
                 <td colspan="4" class="text-center py-5">
                     <i class="bi bi-exclamation-triangle display-4 text-danger"></i>
                     <h5 class="mt-3 text-danger">Erro ao carregar empréstimos</h5>
-                    <p class="text-muted">${error.message}</p>
+                    <p class="text-muted">${errorMsg}</p>
                 </td>
             </tr>`;
         });

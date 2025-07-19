@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', function () {
             const modal = new bootstrap.Modal(document.getElementById('userModal'));
             modal.show();
         } catch (e) {
-            alert('Erro ao carregar dados do usuário: ' + e.message);
+            showAlert('Erro ao carregar dados do usuário: ' + e.message);
         }
     });
 

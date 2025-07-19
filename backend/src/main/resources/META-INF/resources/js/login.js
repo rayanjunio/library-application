@@ -36,9 +36,21 @@ window.addEventListener('DOMContentLoaded', function() {
             console.log('Response headers:', response.headers);
             
             if (!response.ok) {
-                const error = await response.text();
-                console.error('Login failed:', error);
-                showAlert('Falha no login');
+                let errorMsg = 'Falha no login';
+                try {
+                    const errorText = await response.text();
+                    // Tenta fazer o parse como JSON
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    // Se não for JSON, mostra o texto bruto
+                    errorMsg = 'Falha no login';
+                }
+                showAlert(errorMsg);
                 return;
             }
 

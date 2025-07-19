@@ -69,7 +69,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include',
                 body: JSON.stringify(userData)
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao salvar usuário';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    errorMsg = 'Erro ao salvar usuário';
+                }
+                showError(errorMsg);
+                return;
+            }
             showSuccess(modoEdicao.ativo ? 'Atualizado!' : 'Criado!');
             modalUsuario.hide();
             formUsuario.reset();
@@ -111,7 +126,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE',
                 credentials: 'include'
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao excluir usuário';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    errorMsg = 'Erro ao excluir usuário';
+                }
+                showError(errorMsg);
+                return;
+            }
             showSuccess('Usuário excluído');
             carregarUsuarios();
         } catch (e) {
