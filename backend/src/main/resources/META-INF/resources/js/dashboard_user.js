@@ -48,7 +48,12 @@ window.addEventListener('DOMContentLoaded', function() {
             if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
             const user = await res.json();
             const modalBody = document.getElementById('userModalBody');
+            let fineAlertHtml = '';
+            if (user.status === 'FINED') {
+                fineAlertHtml = `<div class='alert alert-danger mb-3'><i class='bi bi-exclamation-triangle'></i> Você está multado e não pode fazer novos empréstimos até regularizar sua situação.</div>`;
+            }
             modalBody.innerHTML = `
+                ${fineAlertHtml}
                 <ul class="list-group">
                     <li class="list-group-item"><strong>Nome:</strong> ${user.name}</li>
                     <li class="list-group-item"><strong>Email:</strong> ${user.email}</li>

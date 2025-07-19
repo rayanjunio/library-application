@@ -54,6 +54,25 @@ window.addEventListener('DOMContentLoaded', function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
+    // Add fine alert at the top
+    function showFineAlertIfNeeded() {
+        fetch('/user/get', { credentials: 'include' })
+            .then(res => res.ok ? res.json() : null)
+            .then(user => {
+                if (user && user.status === 'FINED') {
+                    const container = document.querySelector('.container');
+                    if (container && !document.getElementById('fine-alert')) {
+                        const div = document.createElement('div');
+                        div.id = 'fine-alert';
+                        div.className = 'alert alert-danger mb-3';
+                        div.innerHTML = "<i class='bi bi-exclamation-triangle'></i> Você está multado e não pode fazer novos empréstimos até regularizar sua situação.";
+                        container.prepend(div);
+                    }
+                }
+            });
+    }
+    showFineAlertIfNeeded();
+
     fetch(`/loan/get-from-user`, { credentials: 'include' })
     .then(response => {
         if (!response.ok) {

@@ -25,10 +25,50 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${u.name}</td>
           <td>${u.email}</td>
           <td>${u.cpf}</td>
-          <td><span class="badge bg-${u.status === 'ACTIVE' ? 'success' : 'warning'}">${u.status}</span></td>
+          <td><span class="badge bg-${u.status === 'ACTIVE' ? 'success' : 'warning'}">${u.status}</span>
+            ${u.status === 'FINED' ? `<button class='btn btn-sm btn-outline-danger ms-2' data-remove-fine='${u.email}'>Remover Multa</button>` : ''}
+          </td>
           <td>${u.profile}</td>
         </tr>
       `).join('');
+        // Adicionar evento aos botões de remover multa
+        document.querySelectorAll('[data-remove-fine]').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const email = btn.getAttribute('data-remove-fine');
+                btn.disabled = true;
+                btn.textContent = 'Removendo...';
+                try {
+                    const res = await fetch(`/loan/remove-fine/${email}`, {
+                        method: 'PATCH',
+                        credentials: 'include'
+                    });
+                    if (!res.ok) {
+                        let errorMsg = 'Erro ao remover multa';
+                        try {
+                            const errorText = await res.text();
+                            const errorJson = JSON.parse(errorText);
+                            if (errorJson && errorJson.message) {
+                                errorMsg = errorJson.message;
+                            } else {
+                                errorMsg = errorText;
+                            }
+                        } catch (e) {
+                            errorMsg = 'Erro ao remover multa';
+                        }
+                        showError(errorMsg);
+                        btn.disabled = false;
+                        btn.textContent = 'Remover Multa';
+                        return;
+                    }
+                    showSuccess('Multa removida com sucesso!');
+                    carregarUsuarios();
+                } catch (e) {
+                    showError('Erro: ' + e.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Remover Multa';
+                }
+            });
+        });
     }
 
     function showAlert(msg, type = 'danger') {
