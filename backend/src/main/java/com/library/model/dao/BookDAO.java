@@ -30,14 +30,18 @@ public class BookDAO implements PanacheRepository<Book> {
     return find("isbn", isbn).firstResultOptional();
   }
 
-  public List<Book> findAvailableBooks(int limit) {
+  public List<Book> findAvailableBooks(int page, int size) {
     return entityManager.createQuery("SELECT b FROM Book b WHERE b.availableQuantity > 0", Book.class)
-            .setMaxResults(limit)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
             .getResultList();
   }
 
-  public List<Book> findAllBooks() {
-    return findAll().stream().toList();
+  public List<Book> findAllBooks(int page, int size) {
+    return entityManager.createQuery("SELECT b FROM Book b", Book.class)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
+            .getResultList();
   }
 
   public long countAvailableBooks() {
