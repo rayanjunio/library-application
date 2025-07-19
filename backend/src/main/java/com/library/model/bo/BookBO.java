@@ -2,6 +2,7 @@ package com.library.model.bo;
 
 import com.library.exception.type.BusinessException;
 import com.library.model.dao.BookDAO;
+import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.book.BookCreateDTO;
 import com.library.model.dto.book.BookUpdateDTO;
 import com.library.model.dto.book.BookResponseDTO;
@@ -12,7 +13,6 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequestScoped
 public class BookBO {
@@ -35,10 +35,14 @@ public class BookBO {
         return new BookResponseDTO(book);
     }
 
-    public List<BookResponseDTO> findAll() {
-        return bookDAO.findAllBooks().stream()
+    public PagedResponseDTO<BookResponseDTO> findAll(int page, int size) {
+        List<BookResponseDTO> books = bookDAO.findAllBooks(page, size)
+                .stream()
                 .map(BookResponseDTO::new)
-                .collect(Collectors.toList());
+                .toList();
+        long total = bookDAO.countAllBooks();
+
+        return new PagedResponseDTO<>(total, page, size, books);
     }
 
     public BookResponseDTO findByIsbn(String isbn) {
@@ -49,12 +53,16 @@ public class BookBO {
         return new BookResponseDTO(book.get());
     }
 
-    public List<BookResponseDTO> findAvailableBooks() {
-        List<Book> books = bookDAO.findAvailableBooks(10);
+    public PagedResponseDTO<BookResponseDTO> findAvailableBooks(int page, int size) {
+        List<Book> books = bookDAO.findAvailableBooks(page, size);
+        long total = bookDAO.countAvailableBooks();
 
-        return books.stream()
+        List<BookResponseDTO> availableBooks =
+                books.stream()
                 .map(BookResponseDTO::new)
                 .toList();
+
+        return new PagedResponseDTO<>(total, page, size, availableBooks);
     }
 
     @Transactional

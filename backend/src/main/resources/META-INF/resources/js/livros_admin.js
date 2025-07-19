@@ -1,4 +1,3 @@
-// JS para gerenciamento de livros
 window.addEventListener('DOMContentLoaded', () => {
     const alertArea = document.getElementById('alert-area');
     const tabelaLivros = document.getElementById('tabelaLivros');
@@ -7,8 +6,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const modalLivro = document.getElementById('modalLivro');
     const modalLabel = document.getElementById('modalLivroLabel');
     const btnAddLivro = document.getElementById('btn-add-livro');
+    const pagination = document.getElementById('pagination');
 
     let livroEditando = null;
+    let currentPage = 0;
 
     btnLogout?.addEventListener('click', async () => {
         try {
@@ -70,10 +71,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const carregarLivros = async () => {
         try {
-            const res = await fetch('/book/available-books', { credentials: 'include' });
+            const res = await fetch(`/book/get-all?page=${currentPage}`, { credentials: 'include' });
             if (!res.ok) throw new Error('Erro ao buscar livros');
-            const livros = await res.json();
-            exibirLivros(livros);
+            const data = await res.json();
+            exibirLivros(data.content);
+            renderPagination(data.total, data.page, data.size);
         } catch (e) {
             showAlert('Erro ao carregar livros disponíveis');
         }
@@ -81,7 +83,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const exibirLivros = (livros) => {
         tabelaLivros.innerHTML = '';
-
         if (livros.length === 0) {
             tabelaLivros.innerHTML = `<tr><td colspan="6" class="text-center">Nenhum livro cadastrado.</td></tr>`;
             return;
@@ -113,6 +114,42 @@ window.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-delete]').forEach(btn => {
             btn.addEventListener('click', () => excluirLivro(btn.dataset.delete));
         });
+    };
+
+    const renderPagination = (total, page, size) => {
+        const totalPages = Math.ceil(total / size);
+        if (totalPages <= 1) {
+            pagination.innerHTML = '';
+            return;
+        }
+
+        let html = `
+            <li class="page-item ${page === 0 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${page - 1})">Anterior</a>
+            </li>`;
+
+        for (let i = 0; i < totalPages; i++) {
+            if (i === 0 || i === totalPages - 1 || (i >= page - 2 && i <= page + 2)) {
+                html += `
+                    <li class="page-item ${i === page ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i + 1}</a>
+                    </li>`;
+            } else if (i === page - 3 || i === page + 3) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+
+        html += `
+            <li class="page-item ${page === totalPages - 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${page + 1})">Próximo</a>
+            </li>`;
+
+        pagination.innerHTML = html;
+    };
+
+    window.changePage = (page) => {
+        currentPage = page;
+        carregarLivros();
     };
 
     // Formulário de adicionar/editar livro
