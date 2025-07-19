@@ -1,6 +1,7 @@
 package com.library.controller.api;
 
 import com.library.model.bo.BookBO;
+import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.book.BookCreateDTO;
 import com.library.model.dto.book.BookUpdateDTO;
 import com.library.model.dto.book.BookResponseDTO;
@@ -11,11 +12,12 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.List;
 import java.util.Map;
 
 @Path("book")
 public class BookController {
+
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     @Inject
     BookBO bookBO;
@@ -31,9 +33,10 @@ public class BookController {
 
     @GET
     @RolesAllowed({ "ADMIN" })
+    @Path("get-all")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        List<BookResponseDTO> response = bookBO.findAll();
+    public Response findAll(@QueryParam("page") @DefaultValue("0") int page) {
+        PagedResponseDTO<BookResponseDTO> response = bookBO.findAll(page, DEFAULT_PAGE_SIZE);
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
@@ -50,8 +53,8 @@ public class BookController {
     @Path("available-books")
     @RolesAllowed({ "ADMIN", "MEMBER" })
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAvailableBooks() {
-        List<BookResponseDTO> response = bookBO.findAvailableBooks();
+    public Response findAvailableBooks(@QueryParam("page") @DefaultValue("0") int page) {
+        PagedResponseDTO<BookResponseDTO> response = bookBO.findAvailableBooks(page, DEFAULT_PAGE_SIZE);
         return Response.status(Response.Status.OK).entity(response).build();
     }
 
