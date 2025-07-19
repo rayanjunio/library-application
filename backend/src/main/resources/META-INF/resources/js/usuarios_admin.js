@@ -27,10 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${u.cpf}</td>
           <td><span class="badge bg-${u.status === 'ACTIVE' ? 'success' : 'warning'}">${u.status}</span></td>
           <td>${u.profile}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-primary" onclick="editarUsuario(${u.id})">Editar</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="excluirUsuario(${u.id})">Excluir</button>
-          </td>
         </tr>
       `).join('');
     }
