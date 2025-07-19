@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = true;
 
         try {
-            const response = await fetch('/users', {
+            const response = await fetch('/user/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password, cpf })
@@ -59,7 +59,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
             showAlert('Cadastro realizado com sucesso! Redirecionando para login...', 'success');
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = '/login';
             }, 1500);
         } catch (err) {
             showAlert('Erro no cadastro: ' + err.message);
