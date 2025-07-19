@@ -25,6 +25,30 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Botão Meus Dados
+    const btnMeusDados = document.getElementById('btn-meus-dados');
+    btnMeusDados?.addEventListener('click', async () => {
+        try {
+            const res = await fetch('/user/get', { credentials: 'include' });
+            if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
+            const user = await res.json();
+            const modalBody = document.getElementById('userModalBody');
+            modalBody.innerHTML = `
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Nome:</strong> ${user.name}</li>
+                    <li class="list-group-item"><strong>Email:</strong> ${user.email}</li>
+                    <li class="list-group-item"><strong>CPF:</strong> ${user.cpf}</li>
+                    <li class="list-group-item"><strong>Status:</strong> ${user.status}</li>
+                    <li class="list-group-item"><strong>Perfil:</strong> ${user.profile}</li>
+                </ul>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+        } catch (e) {
+            alert('Erro ao carregar dados do usuário: ' + e.message);
+        }
+    });
+
     function showAlert(message, type = 'danger') {
         alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
             ${message}
