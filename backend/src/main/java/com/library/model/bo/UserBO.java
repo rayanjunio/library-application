@@ -2,7 +2,6 @@ package com.library.model.bo;
 
 import com.library.exception.type.BusinessException;
 import com.library.model.dao.LoanDAO;
-import com.library.model.dao.ProfileDAO;
 import com.library.model.dao.UserDAO;
 import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
@@ -28,9 +27,6 @@ public class UserBO {
   UserDAO userDAO;
 
   @Inject
-  ProfileDAO profileDAO;
-
-  @Inject
   LoanDAO loanDAO;
 
   @Inject
@@ -54,14 +50,8 @@ public class UserBO {
     User user = new User(userRequestDTO);
     Profile profile;
 
-    if (userDAO.count() == 0) {
-      profile = profileDAO.findByRole("ADMIN");
-      if (profile == null) profile = profileBO.createAdminProfile();
-
-    } else {
-      profile = profileDAO.findByRole("MEMBER");
-      if (profile == null) profile = profileBO.createMemberProfile();
-    }
+    if (userDAO.count() == 0) profile = profileBO.getOrCreateProfileByRole("ADMIN");
+     else profile = profileBO.getOrCreateProfileByRole("MEMBER");
 
     user.setProfile(profile);
     user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
@@ -84,7 +74,7 @@ public class UserBO {
     }
 
     User user = new User(userRequestDTO);
-    Profile profile = profileDAO.findByRole("ADMIN");
+    Profile profile = profileBO.getOrCreateProfileByRole("ADMIN");
 
     user.setProfile(profile);
     user.setPassword(BcryptUtil.bcryptHash(userRequestDTO.getPassword()));
