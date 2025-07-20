@@ -109,7 +109,22 @@ window.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include'
             });
 
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao finalizar empréstimo';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    errorMsg = 'Erro ao finalizar empréstimo';
+                }
+                showAlert(errorMsg);
+                return;
+            }
 
             showAlert('Empréstimo finalizado com sucesso!', 'success');
             await carregarEmprestimos();
@@ -136,7 +151,22 @@ window.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(body)
                 });
 
-                if (!res.ok) throw new Error(await res.text());
+                if (!res.ok) {
+                    let errorMsg = 'Erro ao criar empréstimo';
+                    try {
+                        const errorText = await res.text();
+                        const errorJson = JSON.parse(errorText);
+                        if (errorJson && errorJson.message) {
+                            errorMsg = errorJson.message;
+                        } else {
+                            errorMsg = errorText;
+                        }
+                    } catch (e) {
+                        errorMsg = 'Erro ao criar empréstimo';
+                    }
+                    showAlert(errorMsg);
+                    return;
+                }
 
                 showAlert('Empréstimo criado com sucesso!', 'success');
                 formEmprestimo.reset();

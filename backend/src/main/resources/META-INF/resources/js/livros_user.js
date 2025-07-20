@@ -25,6 +25,35 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Button My Data
+    const btnMeusDados = document.getElementById('btn-meus-dados');
+    btnMeusDados?.addEventListener('click', async () => {
+        try {
+            const res = await fetch('/user/get', { credentials: 'include' });
+            if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
+            const user = await res.json();
+            const modalBody = document.getElementById('userModalBody');
+            let fineAlertHtml = '';
+            if (user.status === 'FINED') {
+                fineAlertHtml = `<div class='alert alert-danger mb-3'><i class='bi bi-exclamation-triangle'></i> Você está multado e não pode fazer novos empréstimos até regularizar sua situação.</div>`;
+            }
+            modalBody.innerHTML = `
+                ${fineAlertHtml}
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Nome:</strong> ${user.name}</li>
+                    <li class="list-group-item"><strong>Email:</strong> ${user.email}</li>
+                    <li class="list-group-item"><strong>CPF:</strong> ${user.cpf}</li>
+                    <li class="list-group-item"><strong>Status:</strong> ${user.status}</li>
+                    <li class="list-group-item"><strong>Perfil:</strong> ${user.profile}</li>
+                </ul>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+        } catch (e) {
+            showAlert('Erro ao carregar dados do usuário: ' + e.message);
+        }
+    });
+
     function showAlert(message, type = 'danger') {
         alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
             ${message}
@@ -47,9 +76,9 @@ window.addEventListener('DOMContentLoaded', function () {
 
     function getStatusBadge(availableQuantity, totalQuantity) {
         if (availableQuantity > 0) {
-            return `<span class="badge bg-success">Disponível (${availableQuantity}/${totalQuantity})</span>`;
+            return `<span class="badge bg-success">Available (${availableQuantity}/${totalQuantity})</span>`;
         } else {
-            return `<span class="badge bg-danger">Indisponível</span>`;
+            return `<span class="badge bg-danger">Unavailable</span>`;
         }
     }
 
@@ -58,8 +87,8 @@ window.addEventListener('DOMContentLoaded', function () {
             booksContainer.innerHTML = `
                 <div class="col-12 text-center py-5">
                     <i class="bi bi-book display-1 text-muted"></i>
-                    <h4 class="mt-3 text-muted">Nenhum livro encontrado</h4>
-                    <p class="text-muted">Tente ajustar os filtros de busca</p>
+                    <h4 class="mt-3 text-muted">No books found</h4>
+                    <p class="text-muted">Try adjusting your search filters</p>
                 </div>
             `;
             return;
@@ -71,16 +100,16 @@ window.addEventListener('DOMContentLoaded', function () {
                 <div class="card-body">
                     <h5 class="card-title text-truncate" title="${book.title}">${book.title}</h5>
                     <p class="card-text text-muted mb-2">
-                        <strong>Autor:</strong> ${book.author || 'Não informado'}
+                        <strong>Author:</strong> ${book.author || 'Not informed'}
                     </p>
                     <p class="card-text text-muted mb-2">
-                        <strong>ISBN:</strong> ${book.isbn || 'Não informado'}
+                        <strong>ISBN:</strong> ${book.isbn || 'Not informed'}
                     </p>
                     <p class="card-text mb-3">
                         ${getStatusBadge(book.availableQuantity, book.quantity)}
                     </p>
                     <button class="btn btn-outline-primary btn-sm" onclick="showBookDetails(${book.id})">
-                        Ver Detalhes
+                        View Details
                     </button>
                 </div>
             </div>
@@ -97,14 +126,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
         let paginationHTML = '';
 
-        // Botão anterior
+        // Previous button
         paginationHTML += `
         <li class="page-item ${current === 0 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${current - 1})">Anterior</a>
+            <a class="page-link" href="#" onclick="changePage(${current - 1})">Previous</a>
         </li>
     `;
 
-        // Páginas
+        // Pages
         for (let i = 0; i < totalPages; i++) {
             if (i === 0 || i === totalPages - 1 || (i >= current - 2 && i <= current + 2)) {
                 paginationHTML += `
@@ -117,10 +146,10 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Botão próximo
+        // Next button
         paginationHTML += `
         <li class="page-item ${current === totalPages - 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${current + 1})">Próximo</a>
+            <a class="page-link" href="#" onclick="changePage(${current + 1})">Next</a>
         </li>
     `;
 
@@ -180,17 +209,44 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Funções globais para paginação e modal
+    // Global functions for pagination and modal
     window.changePage = function (page) {
         currentPage = page;
         loadBooks();
     };
 
     window.showBookDetails = function (bookId) {
-        // Implementar modal de detalhes do livro se necessário
-        alert('Funcionalidade de detalhes do livro será implementada em breve!');
+        const book = (availableBooks || []).find(b => b.id === bookId);
+        if (!book) {
+            showAlert('Book not found!');
+            return;
+        }
+        fetch(`/book/get/${book.isbn}`, { credentials: 'include' })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao buscar detalhes do livro');
+                return response.json();
+            })
+            .then(data => {
+                const modalBody = document.getElementById('bookModalBody');
+                modalBody.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>${data.title}</h4>
+                            <p><strong>Author:</strong> ${data.author || 'Not informed'}</p>
+                            <p><strong>ISBN:</strong> ${data.isbn}</p>
+                            <p><strong>Total quantity:</strong> ${data.quantity}</p>
+                            <p><strong>Available:</strong> ${data.availableQuantity}</p>
+                        </div>
+                    </div>
+                `;
+                const modal = new bootstrap.Modal(document.getElementById('bookModal'));
+                modal.show();
+            })
+            .catch(error => {
+                showAlert('Erro ao carregar detalhes do livro: ' + error.message);
+            });
     };
 
-    // Carregar livros ao iniciar
+    // Load books on start
     loadBooks();
 }); 

@@ -16,6 +16,30 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Botão Meus Dados
+    const btnMeusDados = document.getElementById('btn-meus-dados');
+    btnMeusDados?.addEventListener('click', async () => {
+        try {
+            const res = await fetch('/user/get', { credentials: 'include' });
+            if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
+            const user = await res.json();
+            const modalBody = document.getElementById('userModalBody');
+            modalBody.innerHTML = `
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Nome:</strong> ${user.name}</li>
+                    <li class="list-group-item"><strong>Email:</strong> ${user.email}</li>
+                    <li class="list-group-item"><strong>CPF:</strong> ${user.cpf}</li>
+                    <li class="list-group-item"><strong>Status:</strong> ${user.status}</li>
+                    <li class="list-group-item"><strong>Perfil:</strong> ${user.profile}</li>
+                </ul>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+        } catch (e) {
+            alert('Erro ao carregar dados do usuário: ' + e.message);
+        }
+    });
+
     function formatDate(dateString) {
         if (!dateString) return '-';
         const date = new Date(dateString);
@@ -30,10 +54,29 @@ window.addEventListener('DOMContentLoaded', function() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
+    // Add fine alert at the top
+    function showFineAlertIfNeeded() {
+        fetch('/user/get', { credentials: 'include' })
+            .then(res => res.ok ? res.json() : null)
+            .then(user => {
+                if (user && user.status === 'FINED') {
+                    const container = document.querySelector('.container');
+                    if (container && !document.getElementById('fine-alert')) {
+                        const div = document.createElement('div');
+                        div.id = 'fine-alert';
+                        div.className = 'alert alert-danger mb-3';
+                        div.innerHTML = "<i class='bi bi-exclamation-triangle'></i> Você está multado e não pode fazer novos empréstimos até regularizar sua situação.";
+                        container.prepend(div);
+                    }
+                }
+            });
+    }
+    showFineAlertIfNeeded();
+
     fetch(`/loan/get-from-user`, { credentials: 'include' })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erro ao carregar dados do usuário');
+            return response.text().then(errorText => { throw new Error(errorText); });
         }
         return response.json();
     })
@@ -86,12 +129,23 @@ window.addEventListener('DOMContentLoaded', function() {
         }).join('');
     })
         .catch(error => {
+            let errorMsg = 'Erro ao carregar empréstimos';
+            try {
+                const errorJson = JSON.parse(error.message);
+                if (errorJson && errorJson.message) {
+                    errorMsg = errorJson.message;
+                } else {
+                    errorMsg = error.message;
+                }
+            } catch (e) {
+                errorMsg = error.message;
+            }
             emprestimosTbody.innerHTML = `
             <tr>
                 <td colspan="4" class="text-center py-5">
                     <i class="bi bi-exclamation-triangle display-4 text-danger"></i>
                     <h5 class="mt-3 text-danger">Erro ao carregar empréstimos</h5>
-                    <p class="text-muted">${error.message}</p>
+                    <p class="text-muted">${errorMsg}</p>
                 </td>
             </tr>`;
         });

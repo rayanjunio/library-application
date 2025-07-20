@@ -28,4 +28,44 @@ window.addEventListener('DOMContentLoaded', function() {
         .then(res => res.ok ? res.json() : Promise.reject())
         .then(data => countEmprestimos.textContent = data.activeLoansCount)
         .catch(() => countEmprestimos.textContent = '...');
+
+    // Botão Meus Dados
+    const btnMeusDados = document.getElementById('btn-meus-dados');
+    function showAlert(message, type = 'danger') {
+        const alertArea = document.getElementById('alert-area');
+        if (!alertArea) {
+            alert(message);
+            return;
+        }
+        alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    }
+    btnMeusDados?.addEventListener('click', async () => {
+        try {
+            const res = await fetch('/user/get', { credentials: 'include' });
+            if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
+            const user = await res.json();
+            const modalBody = document.getElementById('userModalBody');
+            let fineAlertHtml = '';
+            if (user.status === 'FINED') {
+                fineAlertHtml = `<div class='alert alert-danger mb-3'><i class='bi bi-exclamation-triangle'></i> Você está multado e não pode fazer novos empréstimos até regularizar sua situação.</div>`;
+            }
+            modalBody.innerHTML = `
+                ${fineAlertHtml}
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Nome:</strong> ${user.name}</li>
+                    <li class="list-group-item"><strong>Email:</strong> ${user.email}</li>
+                    <li class="list-group-item"><strong>CPF:</strong> ${user.cpf}</li>
+                    <li class="list-group-item"><strong>Status:</strong> ${user.status}</li>
+                    <li class="list-group-item"><strong>Perfil:</strong> ${user.profile}</li>
+                </ul>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+        } catch (e) {
+            showAlert('Erro ao carregar dados do usuário: ' + e.message);
+        }
+    });
 }); 

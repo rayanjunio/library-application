@@ -19,6 +19,7 @@
                     <li class="nav-item"><a class="nav-link" href="/books/view">Livros</a></li>
                     <li class="nav-item"><a class="nav-link" href="/loans/view">Meus Empréstimos</a></li>
                 </ul>
+                <button class="btn btn-outline-light me-2" id="btn-meus-dados">Meus Dados</button>
                 <button class="btn btn-outline-light" id="btn-logout">Sair</button>
             </div>
         </div>
@@ -51,6 +52,23 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/2991/2991108.png" alt="LibraryApp" width="64" height="64" class="mb-3">
                 <h3 class="mb-3" style="font-family: 'Merriweather', serif; font-weight: 700; color: #2d3e50;">Bem-vindo(a) ao LibraryApp!</h3>
                 <p class="lead">Aqui você pode consultar livros e acompanhar seus empréstimos.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Dados do Usuário -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Meus Dados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body" id="userModalBody">
+                    <!-- Conteúdo será preenchido via JS -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>

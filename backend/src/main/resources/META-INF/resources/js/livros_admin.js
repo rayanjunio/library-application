@@ -183,7 +183,22 @@ window.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE',
                 credentials: 'include'
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao excluir livro';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    errorMsg = 'Erro ao excluir livro';
+                }
+                showAlert(errorMsg);
+                return;
+            }
             showAlert('Livro excluído com sucesso!', 'success');
             carregarLivros();
         } catch (error) {
@@ -237,7 +252,24 @@ window.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ isbn, title, author, quantity })
             });
 
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao salvar livro';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    } else {
+                        errorMsg = errorText;
+                    }
+                } catch (e) {
+                    errorMsg = 'Erro ao salvar livro';
+                }
+                showAlert(errorMsg);
+                btn.textContent = originalText;
+                btn.disabled = false;
+                return;
+            }
 
             showAlert(`Livro ${livroEditando ? 'atualizado' : 'adicionado'} com sucesso!`, 'success');
             bootstrap.Modal.getInstance(modalLivro).hide();
