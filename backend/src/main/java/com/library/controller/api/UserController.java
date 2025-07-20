@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Map;
@@ -83,9 +84,10 @@ public class UserController {
   @DELETE
   @Path("delete/{id}")
   @RolesAllowed({ "ADMIN", "MEMBER" })
-  public Response deleteUser(@PathParam("id") long id) {
-      userBO.deleteUser(id);
-      return Response.status(Response.Status.NO_CONTENT).build();
+  public Response deleteAndLogoutUser(@PathParam("id") long id) {
+    userBO.deleteUser(id);
+    NewCookie expiredCookie = authService.logout();
+    return Response.status(Response.Status.NO_CONTENT).cookie(expiredCookie).build();
   }
 
   @PATCH
