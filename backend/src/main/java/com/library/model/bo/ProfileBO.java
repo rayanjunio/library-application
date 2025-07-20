@@ -14,14 +14,14 @@ public class ProfileBO {
   ProfileDAO profileDAO;
 
   @Transactional
-  private Profile createAdminProfile() {
+  public Profile createAdminProfile() {
     Profile adminProfile = new Profile(Role.ADMIN);
     profileDAO.save(adminProfile);
     return adminProfile;
   }
 
   @Transactional
-  private Profile createMemberProfile() {
+  public Profile createMemberProfile() {
     Profile memberProfile = new Profile(Role.MEMBER);
     profileDAO.save(memberProfile);
     return memberProfile;
