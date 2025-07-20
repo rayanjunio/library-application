@@ -4,6 +4,7 @@ import com.library.exception.type.BusinessException;
 import com.library.model.dao.BookDAO;
 import com.library.model.dao.LoanDAO;
 import com.library.model.dao.UserDAO;
+import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.loan.LoanRequestDTO;
 import com.library.model.dto.loan.LoanResponseDTO;
 import com.library.model.dto.loan.LoanUpdateDTO;
@@ -209,17 +210,23 @@ public class LoanBO {
     return loanDAO.countAllActiveLoans();
   }
 
-  public List<LoanResponseDTO> getUserActiveLoans(long userId) {
-    List<Loan> loans = loanDAO.getUserActiveLoans(userId);
-    return loans.stream()
+  public PagedResponseDTO<LoanResponseDTO> getUserActiveLoans(long userId, int page, int size) {
+    List<Loan> allLoans = loanDAO.getUserActiveLoans(userId, page, size);
+    long total = loanDAO.countUserActiveLoans(userId);
+
+    List<LoanResponseDTO> allLoansResponse =
+            allLoans.stream()
             .map(LoanResponseDTO::new)
             .toList();
+    return new PagedResponseDTO<>(total, page, size, allLoansResponse);
   }
 
-  public List<LoanResponseDTO> getActiveLoans() {
-    List<Loan> loans = loanDAO.getActiveLoans();
-    return loans.stream()
+  public PagedResponseDTO<LoanResponseDTO> getActiveLoans(int page, int size) {
+    List<Loan> loans = loanDAO.getActiveLoans(page, size);
+    long total = loanDAO.countAllActiveLoans();
+    List<LoanResponseDTO> allActiveLoans = loans.stream()
             .map(LoanResponseDTO::new)
             .toList();
+    return new PagedResponseDTO<>(total, page, size, allActiveLoans);
   }
 }

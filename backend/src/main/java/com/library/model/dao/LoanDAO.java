@@ -54,14 +54,18 @@ public class LoanDAO {
             .getSingleResult();
   }
 
-  public List<Loan> getUserActiveLoans(long userId) {
+  public List<Loan> getUserActiveLoans(long userId, int page, int size) {
     return entityManager.createQuery("SELECT l FROM Loan l WHERE l.user.id = :userId AND l.isActive = true", Loan.class)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
             .setParameter("userId", userId)
             .getResultList();
   }
 
-  public List<Loan> getActiveLoans() {
+  public List<Loan> getActiveLoans(int page, int size) {
     return entityManager.createQuery("SELECT l FROM Loan l WHERE l.isActive = true", Loan.class)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
             .getResultList();
   }
 

@@ -1,6 +1,7 @@
 package com.library.controller.api;
 
 import com.library.model.bo.LoanBO;
+import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.auth.UserTokenInfoDTO;
 import com.library.model.dto.loan.LoanRequestDTO;
 import com.library.model.dto.loan.LoanResponseDTO;
@@ -17,6 +18,8 @@ import java.util.Map;
 
 @Path("loan")
 public class LoanController {
+
+  private static final int DEFAULT_PAGE_SIZE = 10;
 
   @Inject
   LoanBO loanBO;
@@ -73,17 +76,19 @@ public class LoanController {
   @Path("get-from-user")
   @RolesAllowed({ "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getUserActiveLoans() {
+  public Response getUserActiveLoans(@QueryParam("page") @DefaultValue("0") int page) {
     UserTokenInfoDTO userinfo = jwtContext.getUserInfo();
-    return Response.ok(Map.of("activeLoans", loanBO.getUserActiveLoans(userinfo.getId()))).build();
+    PagedResponseDTO<LoanResponseDTO> response = loanBO.getUserActiveLoans(userinfo.getId(), page, DEFAULT_PAGE_SIZE);
+    return Response.status(Response.Status.OK).entity(response).build();
   }
 
   @GET
   @Path("get-all")
   @RolesAllowed({ "ADMIN" })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getActiveLoans() {
-    return Response.ok(Map.of("activeLoans", loanBO.getActiveLoans())).build();
+  public Response getActiveLoans(@QueryParam("page") @DefaultValue("0") int page) {
+    PagedResponseDTO<LoanResponseDTO> response = loanBO.getActiveLoans(page, DEFAULT_PAGE_SIZE);
+    return Response.status(Response.Status.OK).entity(response).build();
   }
 
   @GET
