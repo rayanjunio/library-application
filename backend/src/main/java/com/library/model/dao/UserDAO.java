@@ -1,6 +1,7 @@
 package com.library.model.dao;
 
 import com.library.model.entity.User;
+import com.library.model.enums.Role;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -54,6 +55,13 @@ public class UserDAO implements PanacheRepository<User> {
 
   public long countAllUsers() {
     return entityManager.createQuery("SELECT COUNT(u) FROM User u", Long.class)
+            .getSingleResult();
+  }
+
+  public long countAdminUsers() {
+    Role adminRole = Role.ADMIN;
+    return entityManager.createQuery("SELECT COUNT(u) FROM User u WHERE u.profile.role = :adminRole", Long.class)
+            .setParameter("adminRole", adminRole)
             .getSingleResult();
   }
 }

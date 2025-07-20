@@ -1,6 +1,7 @@
 package com.library.model.bo;
 
 import com.library.exception.type.BusinessException;
+import com.library.model.dao.LoanDAO;
 import com.library.model.dao.ProfileDAO;
 import com.library.model.dao.UserDAO;
 import com.library.model.dto.PagedResponseDTO;
@@ -10,6 +11,7 @@ import com.library.model.dto.user.UserUpdateDTO;
 import com.library.model.dto.user.UserResponseDTO;
 import com.library.model.entity.Profile;
 import com.library.model.entity.User;
+import com.library.model.enums.Role;
 import com.library.model.enums.UserStatus;
 import com.library.security.JwtContext;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -27,6 +29,9 @@ public class UserBO {
 
   @Inject
   ProfileDAO profileDAO;
+
+  @Inject
+  LoanDAO loanDAO;
 
   @Inject
   ProfileBO profileBO;
@@ -159,6 +164,14 @@ public class UserBO {
     User user = userDAO.findById(id);
     if (user == null) {
       throw new BusinessException("User not found", 404);
+    }
+
+    if(user.getProfile().getRole().equals(Role.ADMIN) && userDAO.countAdminUsers() == 1) {
+      throw new BusinessException("The system cannot stay without an admin, add another admin before delete your account", 400);
+    }
+
+    if (loanDAO.countUserPendingLoans(id) != 0) {
+      throw new BusinessException("It is not possible, because this user has pending loans", 400);
     }
 
     userDAO.delete(user);
