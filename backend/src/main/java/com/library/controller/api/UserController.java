@@ -1,12 +1,14 @@
 package com.library.controller.api;
 
 import com.library.model.bo.UserBO;
+import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.auth.UserTokenInfoDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;
 import com.library.model.dto.user.UserResponseDTO;
 import com.library.security.JwtContext;
+import com.library.service.AuthService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -14,14 +16,18 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.List;
 import java.util.Map;
 
 @Path("user")
 public class UserController {
 
+  private static final int DEFAULT_PAGE_SIZE = 10;
+
   @Inject
   UserBO userBO;
+
+  @Inject
+  AuthService authService;
 
   @Inject
   JwtContext jwtContext;
@@ -59,8 +65,8 @@ public class UserController {
   @Path("get-all")
   @RolesAllowed({ "ADMIN" })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllUsers() {
-      List<UserResponseDTO> response = userBO.getAllUsers();
+  public Response getAllUsers(@QueryParam("page") @DefaultValue("0") int page) {
+      PagedResponseDTO<UserResponseDTO> response = userBO.getAllUsers(page, DEFAULT_PAGE_SIZE);
       return Response.status(Response.Status.OK).entity(response).build();
   }
 

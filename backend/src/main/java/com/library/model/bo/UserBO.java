@@ -1,9 +1,9 @@
 package com.library.model.bo;
 
 import com.library.exception.type.BusinessException;
-import com.library.model.dao.LoanDAO;
 import com.library.model.dao.ProfileDAO;
 import com.library.model.dao.UserDAO;
+import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;
@@ -19,7 +19,6 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequestScoped
 public class UserBO {
@@ -31,9 +30,6 @@ public class UserBO {
 
   @Inject
   ProfileBO profileBO;
-
-  @Inject
-  LoanDAO loanDAO;
 
   @Inject
   JwtContext jwtContext;
@@ -105,10 +101,15 @@ public class UserBO {
   }
 
   @Transactional
-  public List<UserResponseDTO> getAllUsers() {
-    return userDAO.findAll().stream()
+  public PagedResponseDTO<UserResponseDTO> getAllUsers(int page, int size) {
+    List<User> allUsers = userDAO.findAllUsers(page, size);
+    long total = userDAO.countAllUsers();
+
+    List<UserResponseDTO> allUsersResponse = allUsers
+            .stream()
             .map(UserResponseDTO::new)
-            .collect(Collectors.toList());
+            .toList();
+    return new PagedResponseDTO<>(total, page, size, allUsersResponse);
   }
 
   @Transactional
@@ -153,10 +154,6 @@ public class UserBO {
   public void deleteUser(long id) {
     if (jwtContext.getUserId() != id) {
       throw new BusinessException("You are forbidden to access this content", 403);
-    }
-
-    if (loanDAO.countUserPendingLoans(id) != 0) {
-      throw new BusinessException("It is not possible, because this user has pending loans", 400);
     }
 
     User user = userDAO.findById(id);
