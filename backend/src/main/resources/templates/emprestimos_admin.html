@@ -28,6 +28,8 @@
                 <a class="nav-link active" href="/loans/view">Empréstimos</a>
                     </li>
                 </ul>
+                <button class="btn btn-outline-light me-2" id="btn-admin-meus-dados">Meus Dados</button>
+                <button class="btn btn-outline-light me-2" id="btn-admin-change-password">Alterar Senha</button>
                 <button class="btn btn-outline-light" id="btn-logout">Sair</button>
             </div>
         </div>
@@ -94,6 +96,86 @@
             </div>
         </div>
     </div>
+    <!-- Modal Meus Dados -->
+    <div class="modal fade" id="adminUserModal" tabindex="-1" aria-labelledby="adminUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="adminUserModalLabel">Meus Dados</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="adminUserModalBody">
+            <!-- Dados do admin -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="btn-admin-edit-user">Editar Dados</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Editar Dados -->
+    <div class="modal fade" id="adminEditUserModal" tabindex="-1" aria-labelledby="adminEditUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="adminEditUserForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="adminEditUserModalLabel">Editar Dados</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="admin-edit-user-alert"></div>
+              <div class="mb-3">
+                <label for="admin-edit-user-name" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="admin-edit-user-name" required minlength="2">
+              </div>
+              <div class="mb-3">
+                <label for="admin-edit-user-email" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="admin-edit-user-email" required>
+              </div>
+              <div class="mb-3">
+                <label for="admin-edit-user-cpf" class="form-label">CPF</label>
+                <input type="text" class="form-control" id="admin-edit-user-cpf" required minlength="11" maxlength="14">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Alterar Senha -->
+    <div class="modal fade" id="adminChangePasswordModal" tabindex="-1" aria-labelledby="adminChangePasswordModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="adminChangePasswordForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="adminChangePasswordModalLabel">Alterar Senha</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="admin-change-password-alert"></div>
+              <div class="mb-3">
+                <label for="admin-current-password" class="form-label">Senha Atual</label>
+                <input type="password" class="form-control" id="admin-current-password" required>
+              </div>
+              <div class="mb-3">
+                <label for="admin-new-password" class="form-label">Nova Senha</label>
+                <input type="password" class="form-control" id="admin-new-password" required minlength="8">
+              </div>
+              <div class="mb-3">
+                <label for="admin-confirm-new-password" class="form-label">Confirmar Nova Senha</label>
+                <input type="password" class="form-control" id="admin-confirm-new-password" required minlength="8">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Alterar Senha</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/dashboard_admin.js"></script>
 </body>
 </html> 
