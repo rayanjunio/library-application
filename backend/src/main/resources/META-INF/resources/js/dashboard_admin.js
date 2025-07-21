@@ -39,8 +39,9 @@ window.addEventListener('DOMContentLoaded', function() {
     let adminUserId = null;
     let adminUserData = null;
 
-    // Botão Meus Dados
-    document.getElementById('btn-admin-meus-dados')?.addEventListener('click', async () => {
+    // Botão Meus Dados (agora pelo menu)
+    document.getElementById('menu-admin-meus-dados')?.addEventListener('click', async (e) => {
+        e.preventDefault();
         try {
             const res = await fetch('/user/get', { credentials: 'include' });
             if (!res.ok) throw new Error('Erro ao buscar dados do admin');
@@ -128,8 +129,9 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Abrir modal de alteração de senha
-    document.getElementById('btn-admin-change-password')?.addEventListener('click', () => {
+    // Abrir modal de alteração de senha (agora pelo menu)
+    document.getElementById('menu-admin-change-password')?.addEventListener('click', (e) => {
+        e.preventDefault();
         document.getElementById('admin-change-password-alert').innerHTML = '';
         document.getElementById('admin-current-password').value = '';
         document.getElementById('admin-new-password').value = '';

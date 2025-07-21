@@ -21,9 +21,17 @@
                     <li class="nav-item"><a class="nav-link" href="/loans/view">Empréstimos</a></li>
                 </ul>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-outline-light me-2" id="btn-admin-meus-dados">Meus Dados</button>
-                    <button class="btn btn-outline-light me-2" id="btn-admin-change-password">Alterar Senha</button>
-                    <button class="btn btn-outline-light" id="btn-logout">Sair</button>
+                    <div class="dropdown">
+                      <button class="btn btn-outline-light dropdown-toggle" type="button" id="settingsMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-gear"></i> Configurações
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsMenu">
+                        <li><a class="dropdown-item" href="#" id="menu-admin-meus-dados">Meus Dados</a></li>
+                        <li><a class="dropdown-item" href="#" id="menu-admin-change-password">Alterar Senha</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="btn-logout">Sair</a></li>
+                      </ul>
+                    </div>
                 </div>
             </div>
         </div>
