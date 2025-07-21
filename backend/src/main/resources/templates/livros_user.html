@@ -19,8 +19,17 @@
                     <li class="nav-item"><a class="nav-link active" href="/books/view">Livros</a></li>
                     <li class="nav-item"><a class="nav-link" href="/loans/view">Meus Empréstimos</a></li>
                 </ul>
-                <button class="btn btn-outline-light me-2" id="btn-meus-dados">Meus Dados</button>
-                <button class="btn btn-outline-light" id="btn-logout">Sair</button>
+                <div class="dropdown">
+                  <button class="btn btn-outline-light dropdown-toggle" type="button" id="settingsMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-gear"></i> Configurações
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsMenu">
+                    <li><a class="dropdown-item" href="#" id="menu-user-meus-dados">Meus Dados</a></li>
+                    <li><a class="dropdown-item" href="#" id="menu-user-change-password">Alterar Senha</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" id="btn-logout">Sair</a></li>
+                  </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -94,8 +103,6 @@
                     <!-- Conteúdo será preenchido via JS -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" id="btn-edit-user" data-bs-dismiss="modal">Editar Dados</button>
-                    <button type="button" class="btn btn-outline-warning" id="btn-change-password" data-bs-dismiss="modal">Alterar Senha</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
