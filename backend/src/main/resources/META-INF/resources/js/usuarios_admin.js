@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch('/user/get-all', { credentials: 'include' });
             if (!res.ok) throw new Error('Erro ao carregar');
-            const usuarios = await res.json();
+            const data = await res.json();
+            const usuarios = data.content || [];
             atualizarTabela(usuarios);
         } catch (e) {
             showError('Erro: ' + e.message);

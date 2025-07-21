@@ -92,9 +92,9 @@ window.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('/loan/get-all', {credentials: 'include'});
             if (!res.ok) throw new Error('Erro ao carregar empréstimos');
 
-            const {activeLoans} = await res.json();
-
-            exibirEmprestimos(activeLoans);
+            const data = await res.json();
+            const loans = data.content || [];
+            exibirEmprestimos(loans);
         } catch {
             showAlert('Erro ao carregar empréstimos');
         }

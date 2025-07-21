@@ -80,9 +80,9 @@ window.addEventListener('DOMContentLoaded', function() {
         }
         return response.json();
     })
-    .then(userData => {
+    .then(data => {
         emprestimosTbody.innerHTML = '';
-        const emprestimos = userData.activeLoans || [];
+        const emprestimos = data.content || [];
         
         if (emprestimos.length === 0) {
             emprestimosTbody.innerHTML = `
