@@ -54,8 +54,74 @@
                     <!-- Conteúdo será preenchido via JS -->
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" id="btn-edit-user" data-bs-dismiss="modal">Editar Dados</button>
+                    <button type="button" class="btn btn-outline-warning" id="btn-change-password" data-bs-dismiss="modal">Alterar Senha</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Edição de Dados do Usuário -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Editar Dados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <form id="editUserForm">
+                    <div class="modal-body">
+                        <div id="edit-user-alert"></div>
+                        <div class="mb-3">
+                            <label for="edit-user-name" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="edit-user-name" required minlength="2" maxlength="70">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-user-email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="edit-user-email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-user-cpf" class="form-label">CPF</label>
+                            <input type="text" class="form-control" id="edit-user-cpf" required maxlength="14">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Alteração de Senha -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Alterar Senha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <form id="changePasswordForm">
+                    <div class="modal-body">
+                        <div id="change-password-alert"></div>
+                        <div class="mb-3">
+                            <label for="current-password" class="form-label">Senha Atual</label>
+                            <input type="password" class="form-control" id="current-password" required minlength="8">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-password" class="form-label">Nova Senha</label>
+                            <input type="password" class="form-control" id="new-password" required minlength="8">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm-new-password" class="form-label">Confirmar Nova Senha</label>
+                            <input type="password" class="form-control" id="confirm-new-password" required minlength="8">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
