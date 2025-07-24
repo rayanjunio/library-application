@@ -78,15 +78,15 @@ window.addEventListener('DOMContentLoaded', function () {
         const alertDiv = document.getElementById('edit-user-alert');
         alertDiv.innerHTML = '';
         if (name.length < 2) {
-            alertDiv.innerHTML = '<div class="alert alert-danger">Nome deve ter pelo menos 2 caracteres.</div>';
+            showModalAlert('edit-user-alert', 'Nome deve ter pelo menos 2 caracteres.');
             return;
         }
         if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) {
-            alertDiv.innerHTML = '<div class="alert alert-danger">E-mail inválido.</div>';
+            showModalAlert('edit-user-alert', 'E-mail inválido.');
             return;
         }
         if (cpf.length < 11) {
-            alertDiv.innerHTML = '<div class="alert alert-danger">CPF inválido.</div>';
+            showModalAlert('edit-user-alert', 'CPF inválido.');
             return;
         }
         try {
@@ -109,16 +109,16 @@ window.addEventListener('DOMContentLoaded', function () {
                 } catch (e) {
                     errorMsg = 'Erro ao atualizar dados';
                 }
-                alertDiv.innerHTML = `<div class=\"alert alert-danger\">${errorMsg}</div>`;
+                showModalAlert('edit-user-alert', errorMsg);
                 return;
             }
-            alertDiv.innerHTML = '<div class=\"alert alert-success\">Dados atualizados com sucesso!</div>';
+            showModalAlert('edit-user-alert', 'Dados atualizados com sucesso!', 'success');
             setTimeout(() => {
                 bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
                 btnMeusDados.click();
             }, 1200);
         } catch (err) {
-            alertDiv.innerHTML = `<div class=\"alert alert-danger\">Erro ao atualizar dados: ${err.message}</div>`;
+            showModalAlert('edit-user-alert', 'Erro ao atualizar dados: ' + err.message);
         }
     });
 
@@ -173,11 +173,11 @@ window.addEventListener('DOMContentLoaded', function () {
         const alertDiv = document.getElementById('change-password-alert');
         alertDiv.innerHTML = '';
         if (newPassword.length < 8) {
-            alertDiv.innerHTML = '<div class="alert alert-danger">A nova senha deve ter pelo menos 8 caracteres.</div>';
+            showModalAlert('change-password-alert', 'A nova senha deve ter pelo menos 8 caracteres.');
             return;
         }
         if (newPassword !== confirmNewPassword) {
-            alertDiv.innerHTML = '<div class="alert alert-danger">A confirmação da nova senha não confere.</div>';
+            showModalAlert('change-password-alert', 'A confirmação da nova senha não confere.');
             return;
         }
         try {
@@ -200,15 +200,15 @@ window.addEventListener('DOMContentLoaded', function () {
                 } catch (e) {
                     errorMsg = 'Erro ao alterar senha';
                 }
-                alertDiv.innerHTML = `<div class="alert alert-danger">${errorMsg}</div>`;
+                showModalAlert('change-password-alert', errorMsg);
                 return;
             }
-            alertDiv.innerHTML = '<div class="alert alert-success">Senha alterada com sucesso!</div>';
+            showModalAlert('change-password-alert', 'Senha alterada com sucesso!', 'success');
             setTimeout(() => {
                 bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
             }, 1200);
         } catch (err) {
-            alertDiv.innerHTML = `<div class="alert alert-danger">Erro ao alterar senha: ${err.message}</div>`;
+            showModalAlert('change-password-alert', 'Erro ao alterar senha: ' + err.message);
         }
     });
 
@@ -371,12 +371,12 @@ window.addEventListener('DOMContentLoaded', function () {
                 hideLoading();
                 showAlert('Erro ao carregar livros: ' + error.message);
                 booksContainer.innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
-                        <h4 class="mt-3 text-danger">Erro ao carregar livros</h4>
-                        <p class="text-muted">Tente novamente mais tarde</p>
-                    </div>
-                `;
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
+                    <h4 class="mt-3 text-danger">Erro ao carregar livros</h4>
+                    <p class="text-muted">Tente novamente mais tarde</p>
+                </div>
+            `;
             });
     }
 
@@ -390,4 +390,4 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Inicialização
     loadBooks();
-});
+}); 

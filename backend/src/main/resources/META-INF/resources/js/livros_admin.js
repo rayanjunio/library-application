@@ -45,6 +45,23 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const showModalAlert = (message, type = 'danger') => {
+        const alertDiv = document.getElementById('modal-livro-alert');
+        if (alertDiv) {
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+            setTimeout(() => {
+                if (alertDiv.querySelector('.alert')) {
+                    alertDiv.querySelector('.alert').classList.remove('show');
+                    setTimeout(() => { alertDiv.innerHTML = ''; }, 150);
+                }
+            }, 5000);
+        }
+    };
+
     // Máscara para ISBN
     const aplicarMascaraISBN = (input) => {
         let value = input.value.replace(/\D/g, '');
@@ -215,22 +232,22 @@ window.addEventListener('DOMContentLoaded', () => {
         const quantity = parseInt(document.getElementById('quantidade').value);
 
         if (isbn.length < 10) {
-            showAlert('O ISBN deve ter pelo menos 13 dígitos.');
+            showModalAlert('O ISBN deve ter pelo menos 13 dígitos.');
             return;
         }
 
         if (title.length < 2) {
-            showAlert('O título deve ter pelo menos 2 caracteres.');
+            showModalAlert('O título deve ter pelo menos 2 caracteres.');
             return;
         }
 
         if (author.length < 2) {
-            showAlert('O autor deve ter pelo menos 2 caracteres.');
+            showModalAlert('O autor deve ter pelo menos 2 caracteres.');
             return;
         }
 
         if (!quantity || quantity < 1) {
-            showAlert('A quantidade deve ser pelo menos 1.');
+            showModalAlert('A quantidade deve ser pelo menos 1.');
             return;
         }
 
@@ -265,18 +282,20 @@ window.addEventListener('DOMContentLoaded', () => {
                 } catch (e) {
                     errorMsg = 'Erro ao salvar livro';
                 }
-                showAlert(errorMsg);
+                showModalAlert(errorMsg);
                 btn.textContent = originalText;
                 btn.disabled = false;
                 return;
             }
 
-            showAlert(`Livro ${livroEditando ? 'atualizado' : 'adicionado'} com sucesso!`, 'success');
-            bootstrap.Modal.getInstance(modalLivro).hide();
-            formLivro.reset();
-            modalLabel.textContent = 'Adicionar Livro';
-            livroEditando = null;
-            carregarLivros();
+            showModalAlert(`Livro ${livroEditando ? 'atualizado' : 'adicionado'} com sucesso!`, 'success');
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(modalLivro).hide();
+                formLivro.reset();
+                modalLabel.textContent = 'Adicionar Livro';
+                livroEditando = null;
+                carregarLivros();
+            }, 1200);
         } catch (err) {
             showAlert('Erro ao salvar livro: ' + err.message);
         } finally {
