@@ -97,7 +97,7 @@ window.addEventListener('DOMContentLoaded', function() {
             return;
         }
         try {
-            const res = await fetch(`/user/update/${adminUserId}`, {
+            const res = await fetch(`/user/update`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
