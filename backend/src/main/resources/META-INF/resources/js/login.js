@@ -20,10 +20,7 @@ window.addEventListener('DOMContentLoaded', function() {
         clearAlert();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        
-        console.log('=== DEBUG LOGIN ===');
-        console.log('Tentando login com email:', email);
-        
+
         try {
             const response = await fetch('/auth/login', {
                 method: 'POST',
@@ -31,10 +28,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
-            
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-            
+
             if (!response.ok) {
                 let errorMsg = 'Falha no login';
                 try {
