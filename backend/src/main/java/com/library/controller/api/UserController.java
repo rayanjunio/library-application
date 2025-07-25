@@ -2,12 +2,10 @@ package com.library.controller.api;
 
 import com.library.model.bo.UserBO;
 import com.library.model.dto.PagedResponseDTO;
-import com.library.model.dto.auth.UserTokenInfoDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;
 import com.library.model.dto.user.UserResponseDTO;
-import com.library.security.JwtContext;
 import com.library.service.AuthService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -29,9 +27,6 @@ public class UserController {
 
   @Inject
   AuthService authService;
-
-  @Inject
-  JwtContext jwtContext;
 
   @POST
   @Path("create")
@@ -56,9 +51,8 @@ public class UserController {
   @Path("get")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getUser() {
-      UserTokenInfoDTO userInfo = jwtContext.getUserInfo();
-      UserResponseDTO response = userBO.getUser(userInfo.getId());
+  public Response getUserWithLoans() {
+      UserResponseDTO response = userBO.getUserWithLoans();
       return Response.status(Response.Status.OK).entity(response).build();
   }
 
@@ -72,20 +66,20 @@ public class UserController {
   }
 
   @PUT
-  @Path("update/{id}")
+  @Path("update")
   @RolesAllowed({ "ADMIN", "MEMBER" })
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response updateUser(@PathParam("id") long id, @Valid UserUpdateDTO userUpdateDTO) {
-      UserResponseDTO response = userBO.updateUser(id, userUpdateDTO);
+  public Response updateUser(@Valid UserUpdateDTO userUpdateDTO) {
+      UserResponseDTO response = userBO.updateUser(userUpdateDTO);
       return Response.status(Response.Status.OK).entity(response).build();
   }
 
   @DELETE
-  @Path("delete/{id}")
+  @Path("delete")
   @RolesAllowed({ "ADMIN", "MEMBER" })
-  public Response deleteAndLogoutUser(@PathParam("id") long id) {
-    userBO.deleteUser(id);
+  public Response deleteAndLogoutUser() {
+    userBO.deleteUser();
     NewCookie expiredCookie = authService.logout();
     return Response.status(Response.Status.NO_CONTENT).cookie(expiredCookie).build();
   }
