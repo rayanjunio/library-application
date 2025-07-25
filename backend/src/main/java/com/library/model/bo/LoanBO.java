@@ -36,42 +36,42 @@ public class LoanBO {
   @Transactional
   public LoanResponseDTO createLoan(LoanRequestDTO loanRequestDTO) {
     if(loanRequestDTO.getExpectedReturnDate().isBefore(LocalDate.now())) {
-      throw new BusinessException("The expected return date must be after today", 400);
+      throw new BusinessException("A data de retorno esperada deve ser posterior à data atual", 400);
     }
 
     Period period = Period.between(LocalDate.now(), loanRequestDTO.getExpectedReturnDate());
     if(period.getDays() > 15) {
-      throw new BusinessException("The loan period cannot exceed 15 days", 400);
+      throw new BusinessException("O período de empréstimo não pode exceder 15 dias", 400);
     }
 
     Optional<User> userExists = userDAO.findByEmail(loanRequestDTO.getUserEmail());
     if(userExists.isEmpty()) {
-      throw new BusinessException("This user does not exist", 400);
+      throw new BusinessException("Esse usuário não existe", 400);
     }
 
     User user = userExists.get();
 
     if(user.getStatus() == UserStatus.FINED) {
-      throw new BusinessException("This user cannot take out more loans until he settles his pending loans", 400);
+      throw new BusinessException("Este usuário não pode realizar novos empréstimos enquanto houver pendências", 400);
     }
 
     if(user.getProfile().getRole().name().equals("ADMIN")) {
-      throw new BusinessException("Admins cannot create loans for themselves. Please, use your personal account", 400);
+      throw new BusinessException("Administradores não podem criar empréstimos para si mesmos. Utilize uma conta pessoal", 400);
     }
 
     if(loanDAO.countUserPendingLoans(user.getId()) != 0) {
-      throw new BusinessException("This user cannot take out more loans because he already has one active loan", 400);
+      throw new BusinessException("Este usuário já possui um empréstimo ativo", 400);
     }
 
     Optional<Book> bookExists = bookDAO.findByIsbn(loanRequestDTO.getBookIsbn());
     if(bookExists.isEmpty()) {
-      throw new BusinessException("This book does not exist", 400);
+      throw new BusinessException("Este livro não existe", 400);
     }
 
     Book book = bookExists.get();
 
     if(book.getAvailableQuantity() <= 0) {
-      throw new BusinessException("This book is unavailable at the moment", 400);
+      throw new BusinessException("Este livro está indisponível no momento", 400);
     }
 
     book.setAvailableQuantity(book.getAvailableQuantity() - 1);
@@ -91,26 +91,26 @@ public class LoanBO {
     Loan loan = loanDAO.findById(loanUpdateDTO.getId());
 
     if(loan == null) {
-      throw new BusinessException("Loan not found", 404);
+      throw new BusinessException("Empréstimo não encontrado", 404);
     }
 
     if(loanUpdateDTO.getUserEmail() != null) {
       User user = userDAO.findByEmail(loanUpdateDTO.getUserEmail()).orElse(null);
 
       if(user == null) {
-        throw new BusinessException("User not found", 404);
+        throw new BusinessException("Usuário não encontrado", 404);
       }
 
       if(user.getStatus() == UserStatus.FINED) {
-        throw new BusinessException("This user cannot take out more loans until he settles his pending loans", 400);
+        throw new BusinessException("Este usuário não pode realizar novos empréstimos enquanto houver pendências", 400);
       }
 
       if(user.getProfile().getRole().name().equals("ADMIN")) {
-        throw new BusinessException("Admins cannot create loans for themselves. Please, use your personal account", 400);
+        throw new BusinessException("Administradores não podem criar empréstimos para si mesmos. Utilize uma conta pessoal", 400);
       }
 
       if(loanDAO.countUserActiveLoansExcluding(loan.getId(), user.getId()) != 0) {
-        throw new BusinessException("This user cannot take out more loans because he already has one active loan", 400);
+        throw new BusinessException("Este usuário já possui um empréstimo ativo", 400);
       }
 
       loan.setUser(user);
@@ -120,11 +120,11 @@ public class LoanBO {
       Book book = bookDAO.findByIsbn(loanUpdateDTO.getBookIsbn()).orElse(null);
 
       if(book == null) {
-        throw new BusinessException("Book not found", 404);
+        throw new BusinessException("Livro não encontrado", 404);
       }
 
       if(book.getAvailableQuantity() <= 0) {
-        throw new BusinessException("This book is unavailable at the moment", 400);
+        throw new BusinessException("Este livro está indisponível no momento", 400);
       }
 
       Book oldBook = loan.getBook();
@@ -138,12 +138,12 @@ public class LoanBO {
 
     if(loanUpdateDTO.getExpectedReturnDate() != null) {
       if (loanUpdateDTO.getExpectedReturnDate().isBefore(LocalDate.now())) {
-        throw new BusinessException("The expected return date must be after today", 400);
+        throw new BusinessException("A data de retorno esperada deve ser posterior à data atual", 400);
       }
 
       Period period = Period.between(loan.getLoanDate(), loanUpdateDTO.getExpectedReturnDate());
       if(period.getDays() > 15) {
-        throw new BusinessException("The loan period cannot exceed 15 days", 400);
+        throw new BusinessException("O período de empréstimo não pode exceder 15 dias", 400);
       }
       loan.setExpectedReturnDate(loanUpdateDTO.getExpectedReturnDate());
     }
@@ -156,7 +156,7 @@ public class LoanBO {
   public LoanResponseDTO finishLoan(int loanId) {
     Loan loan = loanDAO.findById(loanId);
     if(loan == null) {
-      throw new BusinessException("This loan does not exist", 400);
+      throw new BusinessException("Este empréstimo não existe", 400);
     }
 
     loan.setActualReturnDate(LocalDate.now());
@@ -175,7 +175,7 @@ public class LoanBO {
   public void removeUserFine(String email) {
     Optional<User> userExists = userDAO.findByEmail(email);
     if(userExists.isEmpty()) {
-      throw new BusinessException("User not found", 404);
+      throw new BusinessException("Usuário não encontrado", 404);
     }
 
     User user = userExists.get();
@@ -191,7 +191,7 @@ public class LoanBO {
     Loan loan = loanDAO.findById(loanId);
 
     if(loan == null) {
-      throw new BusinessException("Loan not found", 404);
+      throw new BusinessException("Empréstimo não encontrado", 404);
     }
 
     loanDAO.delete(loan);

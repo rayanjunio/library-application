@@ -24,7 +24,7 @@ public class AuthService {
     Optional<User> user = userDAO.findByEmail(email.trim());
 
     if(user.isEmpty() || !BcryptUtil.matches(password, user.get().getPassword())) {
-      throw new BusinessException("Invalid user credentials", 401);
+      throw new BusinessException("Credenciais inválidas", 401);
     }
 
     UserTokenInfoDTO userTokenInfoDTO = new UserTokenInfoDTO(user.get().getId(), email, user.get().getProfile().getRole());

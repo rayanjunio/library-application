@@ -39,11 +39,11 @@ public class UserBO {
     Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
 
     if (userExists.isPresent()) {
-      throw new BusinessException("This email already is registered", 400);
+      throw new BusinessException("Este e-mail já está cadastrado", 400);
     }
 
     if (userDAO.findByCpf(userRequestDTO.getCpf()).isPresent()) {
-      throw new BusinessException("This CPF already is registered", 400);
+      throw new BusinessException("Este CPF já está cadastrado", 400);
     }
 
     User user = new User(userRequestDTO);
@@ -65,11 +65,11 @@ public class UserBO {
     Optional<User> userExists = userDAO.findByEmail(userRequestDTO.getEmail());
 
     if (userExists.isPresent()) {
-      throw new BusinessException("This email already is registered", 400);
+      throw new BusinessException("Este e-mail já está cadastrado", 400);
     }
 
     if (userDAO.findByCpf(userRequestDTO.getCpf()).isPresent()) {
-      throw new BusinessException("This CPF already is registered", 400);
+      throw new BusinessException("Este CPF já está cadastrado", 400);
     }
 
     User user = new User(userRequestDTO);
@@ -87,7 +87,7 @@ public class UserBO {
     long userId = jwtContext.getUserId();
 
     User user = userDAO.findByIdWithLoans(userId)
-            .orElseThrow(() -> new BusinessException("User not found", 404));
+            .orElseThrow(() -> new BusinessException("Usuário não encontrado", 404));
 
     return new UserResponseDTO(user);
   }
@@ -97,7 +97,7 @@ public class UserBO {
 
     Optional<User> user = userDAO.findUser(userId);
     if(user.isEmpty()) {
-      throw new BusinessException("User not found", 404);
+      throw new BusinessException("Usuário não encontrado", 404);
     }
 
     return new UserResponseDTO(user.get());
@@ -121,7 +121,7 @@ public class UserBO {
 
     User user = userDAO.findById(userId);
     if (user == null) {
-      throw new BusinessException("User not found", 404);
+      throw new BusinessException("Usuário não encontrado", 404);
     }
 
     // Atualiza apenas os campos que foram fornecidos
@@ -132,7 +132,7 @@ public class UserBO {
       Optional<User> existingUser = userDAO.findByEmail(userUpdateDTO.getEmail());
 
       if (existingUser.isPresent() && existingUser.get().getId() != userId) {
-        throw new BusinessException("This email is already registered", 400);
+        throw new BusinessException("Este e-mail já está cadastrado", 400);
       }
       user.setEmail(userUpdateDTO.getEmail());
     }
@@ -141,7 +141,7 @@ public class UserBO {
       Optional<User> existingUser = userDAO.findByCpf(userUpdateDTO.getCpf());
 
       if (existingUser.isPresent() && existingUser.get().getId() != userId) {
-        throw new BusinessException("This CPF is already registered", 400);
+        throw new BusinessException("Este CPF já está cadastrado", 400);
       }
 
       user.setCpf(userUpdateDTO.getCpf());
@@ -157,15 +157,15 @@ public class UserBO {
 
     User user = userDAO.findById(userId);
     if (user == null) {
-      throw new BusinessException("User not found", 404);
+      throw new BusinessException("Usuário não encontrado", 404);
     }
 
     if(user.getProfile().getRole().equals(Role.ADMIN) && userDAO.countAdminUsers() == 1) {
-      throw new BusinessException("The system cannot stay without an admin, add another admin before delete your account", 400);
+      throw new BusinessException("O sistema não pode ficar sem um administrador. Adicione outro administrador antes de excluir sua conta", 400);
     }
 
     if (loanBO.countUserPendingLoans(userId) != 0) {
-      throw new BusinessException("It is not possible, because this user has pending loans", 400);
+      throw new BusinessException("Não é possível excluir esta conta. O usuário possui empréstimos pendentes", 400);
     }
 
     userDAO.delete(user);
@@ -177,15 +177,15 @@ public class UserBO {
     User user = userDAO.findById(userId);
 
     if (user == null || !BcryptUtil.matches(dto.getCurrentPassword(), user.getPassword())) {
-      throw new BusinessException("Invalid credentials", 400);
+      throw new BusinessException("Credenciais inválidas", 400);
     }
 
     if (!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {
-      throw new BusinessException("The new password does not match the confirmation", 400);
+      throw new BusinessException("A nova senha não coincide com a confirmação", 400);
     }
 
     if (BcryptUtil.matches(dto.getNewPassword(), user.getPassword())) {
-      throw new BusinessException("New password must be different from the current one", 400);
+      throw new BusinessException("A nova senha deve ser diferente da atual", 400);
     }
 
     user.setPassword(BcryptUtil.bcryptHash(dto.getNewPassword()));

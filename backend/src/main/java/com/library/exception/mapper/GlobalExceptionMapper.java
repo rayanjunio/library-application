@@ -30,7 +30,7 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
   LogBO logBO;
 
   private final int STATUS = 500;
-  private final String MESSAGE = "An unexpected error occurred";
+  private final String MESSAGE = "Ocorreu um erro inesperado";
 
   @Override
   public Response toResponse(Throwable throwable) {

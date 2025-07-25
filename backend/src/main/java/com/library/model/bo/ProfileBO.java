@@ -33,7 +33,7 @@ public class ProfileBO {
     if(profile == null) {
       if(role.equals("ADMIN")) return createAdminProfile();
       else if (role.equals("MEMBER")) return createMemberProfile();
-      else throw new BusinessException("Invalid role", 400);
+      else throw new BusinessException("Perfil inválido", 400);
     }
     return profile;
   }

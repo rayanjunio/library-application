@@ -25,7 +25,7 @@ public class BookBO {
         Optional<Book> bookExists = bookDAO.findByIsbn(bookCreateDTO.getIsbn());
 
         if(bookExists.isPresent()) {
-            throw new BusinessException("This book already exists", 400);
+            throw new BusinessException("Este livro já existe", 400);
         }
 
         Book book = new Book(bookCreateDTO);
@@ -48,7 +48,7 @@ public class BookBO {
     public BookResponseDTO findByIsbn(String isbn) {
         Optional<Book> book = bookDAO.findByIsbn(isbn);
         if(book.isEmpty()) {
-            throw new BusinessException("This book does not exist", 400);
+            throw new BusinessException("Este livro não existe", 400);
         }
         return new BookResponseDTO(book.get());
     }
@@ -69,7 +69,7 @@ public class BookBO {
     public BookResponseDTO updateBook(String isbn, BookUpdateDTO bookUpdateDTO) {
         Optional<Book> bookExists = bookDAO.findByIsbn(isbn);
         if (bookExists.isEmpty()) {
-            throw new BusinessException("This book does not exist", 400);
+            throw new BusinessException("Este livro não existe", 400);
         }
 
         Book book = bookExists.get();
@@ -91,7 +91,7 @@ public class BookBO {
     public void delete(String isbn) {
         Optional<Book> book = bookDAO.findByIsbn(isbn);
         if(book.isEmpty()) {
-            throw new BusinessException("This book does not exist", 400);
+            throw new BusinessException("Este livro não existe", 400);
         }
 
         bookDAO.delete(book.get());
