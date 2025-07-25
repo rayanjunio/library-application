@@ -1,7 +1,6 @@
 package com.library.model.bo;
 
 import com.library.exception.type.BusinessException;
-import com.library.model.dao.LoanDAO;
 import com.library.model.dao.UserDAO;
 import com.library.model.dto.PagedResponseDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
@@ -27,7 +26,7 @@ public class UserBO {
   UserDAO userDAO;
 
   @Inject
-  LoanDAO loanDAO;
+  LoanBO loanBO;
 
   @Inject
   ProfileBO profileBO;
@@ -165,7 +164,7 @@ public class UserBO {
       throw new BusinessException("The system cannot stay without an admin, add another admin before delete your account", 400);
     }
 
-    if (loanDAO.countUserPendingLoans(userId) != 0) {
+    if (loanBO.countUserPendingLoans(userId) != 0) {
       throw new BusinessException("It is not possible, because this user has pending loans", 400);
     }
 

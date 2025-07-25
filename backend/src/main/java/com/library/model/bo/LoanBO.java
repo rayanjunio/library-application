@@ -210,6 +210,10 @@ public class LoanBO {
     return loanDAO.countAllActiveLoans();
   }
 
+  public long countUserPendingLoans(long userId) {
+    return loanDAO.countUserPendingLoans(userId);
+  }
+
   public PagedResponseDTO<LoanResponseDTO> getUserActiveLoans(long userId, int page, int size) {
     List<Loan> allLoans = loanDAO.getUserActiveLoans(userId, page, size);
     long total = loanDAO.countUserActiveLoans(userId);
