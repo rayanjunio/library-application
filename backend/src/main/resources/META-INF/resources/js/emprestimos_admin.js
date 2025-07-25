@@ -29,6 +29,23 @@ window.addEventListener('DOMContentLoaded', () => {
         alertArea.innerHTML = '';
     }
 
+    function showModalEmprestimoAlert(message, type = 'danger') {
+        const alertDiv = document.getElementById('modal-emprestimo-alert');
+        if (alertDiv) {
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+            setTimeout(() => {
+                if (alertDiv.querySelector('.alert')) {
+                    alertDiv.querySelector('.alert').classList.remove('show');
+                    setTimeout(() => { alertDiv.innerHTML = ''; }, 150);
+                }
+            }, 5000);
+        }
+    }
+
     const formatDate = (dateString) => {
         if (!dateString) return '-';
         const date = new Date(dateString);
@@ -164,19 +181,19 @@ window.addEventListener('DOMContentLoaded', () => {
                     } catch (e) {
                         errorMsg = 'Erro ao criar empréstimo';
                     }
-                    showAlert(errorMsg);
+                    showModalEmprestimoAlert(errorMsg);
                     return;
                 }
 
-                showAlert('Empréstimo criado com sucesso!', 'success');
-                formEmprestimo.reset();
-
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalEmprestimo'));
-                modal?.hide();
-
-                await carregarEmprestimos();
+                showModalEmprestimoAlert('Empréstimo criado com sucesso!', 'success');
+                setTimeout(() => {
+                    formEmprestimo.reset();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEmprestimo'));
+                    modal?.hide();
+                    carregarEmprestimos();
+                }, 1200);
             } catch (err) {
-                showAlert('Erro ao criar empréstimo: ' + err.message);
+                showModalEmprestimoAlert('Erro ao criar empréstimo: ' + err.message);
             }
         });
     }

@@ -83,6 +83,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function showSuccess(msg) { showAlert(msg, 'success'); }
     function showError(msg) { showAlert(msg, 'danger'); }
 
+    function showModalUsuarioAlert(msg, type = 'danger') {
+        const alertDiv = document.getElementById('modal-usuario-alert');
+        if (alertDiv) {
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${msg}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+            setTimeout(() => {
+                if (alertDiv.querySelector('.alert')) {
+                    alertDiv.querySelector('.alert').classList.remove('show');
+                    setTimeout(() => { alertDiv.innerHTML = ''; }, 150);
+                }
+            }, 5000);
+        }
+    }
+
     formUsuario.addEventListener('submit', async e => {
         e.preventDefault();
         const nome = document.getElementById('nome').value.trim();
@@ -90,9 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cpf = document.getElementById('cpf').value.trim();
         const senha = document.getElementById('senha').value;
 
-        if (nome.length < 2) return showError('Nome inválido');
-        if (email.length < 5) return showError('Email inválido');
-        if (!modoEdicao.ativo && (!senha || senha.length < 8)) return showError('Senha inválida');
+        if (nome.length < 2) return showModalUsuarioAlert('Nome inválido');
+        if (email.length < 5) return showModalUsuarioAlert('Email inválido');
+        if (!modoEdicao.ativo && (!senha || senha.length < 8)) return showModalUsuarioAlert('Senha inválida');
 
         const userData = { name: nome, email, cpf };
         if (!modoEdicao.ativo) userData.password = senha;
@@ -123,17 +140,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (e) {
                     errorMsg = 'Erro ao salvar usuário';
                 }
-                showError(errorMsg);
+                showModalUsuarioAlert(errorMsg);
                 return;
             }
-            showSuccess(modoEdicao.ativo ? 'Atualizado!' : 'Criado!');
-            modalUsuario.hide();
-            formUsuario.reset();
-            document.getElementById('senha-container').style.display = 'block';
-            modoEdicao = { ativo: false, id: null };
-            carregarUsuarios();
+            showModalUsuarioAlert(modoEdicao.ativo ? 'Atualizado!' : 'Criado!', 'success');
+            setTimeout(() => {
+                modalUsuario.hide();
+                formUsuario.reset();
+                document.getElementById('senha-container').style.display = 'block';
+                modoEdicao = { ativo: false, id: null };
+                carregarUsuarios();
+            }, 1200);
         } catch (e) {
-            showError('Erro: ' + e.message);
+            showModalUsuarioAlert('Erro: ' + e.message);
         }
     });
 
