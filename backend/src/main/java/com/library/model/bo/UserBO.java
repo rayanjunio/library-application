@@ -84,15 +84,24 @@ public class UserBO {
     return new UserResponseDTO(user);
   }
 
-  public UserResponseDTO getUser(long id) {
-    if (!jwtContext.getUserRole().equals("[ADMIN]") && jwtContext.getUserId() != id) {
-      throw new BusinessException("You are forbidden to access this content", 403);
-    }
+  public UserResponseDTO getUserWithLoans() {
+    long userId = jwtContext.getUserId();
 
-    User user = userDAO.findByIdWithLoans(id)
+    User user = userDAO.findByIdWithLoans(userId)
             .orElseThrow(() -> new BusinessException("User not found", 404));
 
     return new UserResponseDTO(user);
+  }
+
+  public UserResponseDTO getUser() {
+    long userId = jwtContext.getUserId();
+
+    Optional<User> user = userDAO.findUser(userId);
+    if(user.isEmpty()) {
+      throw new BusinessException("User not found", 404);
+    }
+
+    return new UserResponseDTO(user.get());
   }
 
   @Transactional
@@ -108,12 +117,10 @@ public class UserBO {
   }
 
   @Transactional
-  public UserResponseDTO updateUser(long id, UserUpdateDTO userUpdateDTO) {
-    if (jwtContext.getUserId() != id) {
-      throw new BusinessException("You are forbidden to access this content", 403);
-    }
+  public UserResponseDTO updateUser(UserUpdateDTO userUpdateDTO) {
+    long userId = jwtContext.getUserId();
 
-    User user = userDAO.findById(id);
+    User user = userDAO.findById(userId);
     if (user == null) {
       throw new BusinessException("User not found", 404);
     }
@@ -125,7 +132,7 @@ public class UserBO {
     if (userUpdateDTO.getEmail() != null) {
       Optional<User> existingUser = userDAO.findByEmail(userUpdateDTO.getEmail());
 
-      if (existingUser.isPresent() && existingUser.get().getId() != id) {
+      if (existingUser.isPresent() && existingUser.get().getId() != userId) {
         throw new BusinessException("This email is already registered", 400);
       }
       user.setEmail(userUpdateDTO.getEmail());
@@ -134,7 +141,7 @@ public class UserBO {
     if (userUpdateDTO.getCpf() != null) {
       Optional<User> existingUser = userDAO.findByCpf(userUpdateDTO.getCpf());
 
-      if (existingUser.isPresent() && existingUser.get().getId() != id) {
+      if (existingUser.isPresent() && existingUser.get().getId() != userId) {
         throw new BusinessException("This CPF is already registered", 400);
       }
 
@@ -146,12 +153,10 @@ public class UserBO {
   }
 
   @Transactional
-  public void deleteUser(long id) {
-    if (jwtContext.getUserId() != id) {
-      throw new BusinessException("You are forbidden to access this content", 403);
-    }
+  public void deleteUser() {
+    long userId = jwtContext.getUserId();
 
-    User user = userDAO.findById(id);
+    User user = userDAO.findById(userId);
     if (user == null) {
       throw new BusinessException("User not found", 404);
     }
@@ -160,7 +165,7 @@ public class UserBO {
       throw new BusinessException("The system cannot stay without an admin, add another admin before delete your account", 400);
     }
 
-    if (loanDAO.countUserPendingLoans(id) != 0) {
+    if (loanDAO.countUserPendingLoans(userId) != 0) {
       throw new BusinessException("It is not possible, because this user has pending loans", 400);
     }
 
@@ -169,7 +174,8 @@ public class UserBO {
 
   @Transactional
   public void changePassword(ChangePasswordDTO dto) {
-    User user = userDAO.findById(jwtContext.getUserId());
+    long userId = jwtContext.getUserId();
+    User user = userDAO.findById(userId);
 
     if (user == null || !BcryptUtil.matches(dto.getCurrentPassword(), user.getPassword())) {
       throw new BusinessException("Invalid credentials", 400);
