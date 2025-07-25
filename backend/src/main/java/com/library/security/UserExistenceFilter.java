@@ -5,7 +5,6 @@ import com.library.model.bo.UserBO;
 import com.library.service.AuthService;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
-import jakarta.json.JsonNumber;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -35,9 +34,8 @@ public class UserExistenceFilter implements ContainerRequestFilter {
     if (path.equals("/") || path.startsWith("login") || path.startsWith("register")) return;
 
     if (jwt.getClaim("userId") != null) {
-      long userId = ((JsonNumber) jwt.getClaim("userId")).longValue();
       try {
-        userBO.getUser(userId);
+        userBO.getUser();
       } catch (BusinessException ex) {
         if (ex.getStatus() == 404) {
           NewCookie expiredCookie = authService.logout();
