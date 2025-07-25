@@ -9,7 +9,6 @@ public class Templates {
   public static native TemplateInstance index();
   public static native TemplateInstance register();
 
-
   public static native TemplateInstance dashboard_admin();
   public static native TemplateInstance dashboard_user();
 
@@ -22,4 +21,7 @@ public class Templates {
 
   public static native TemplateInstance usuarios_admin();
 
+  public static native TemplateInstance not_found();
+
+  public static native TemplateInstance unauthorized();
 }
