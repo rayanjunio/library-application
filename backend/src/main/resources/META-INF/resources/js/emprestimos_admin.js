@@ -18,6 +18,23 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Encerrar Conta
+    const btnDeleteAccount = document.getElementById('btn-delete-account');
+    btnDeleteAccount?.addEventListener('click', async () => {
+        if (!confirm('Tem certeza que deseja encerrar sua conta? Esta ação é irreversível.')) return;
+        try {
+            const res = await fetch('/user/delete', {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (!res.ok) throw new Error(await res.text());
+            alert('Conta encerrada com sucesso!');
+            window.location.href = '/';
+        } catch (err) {
+            alert('Erro ao encerrar conta: ' + err.message);
+        }
+    });
+
     function showAlert(message, type = 'danger') {
         alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
             ${message}
