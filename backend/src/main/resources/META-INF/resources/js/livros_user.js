@@ -44,40 +44,12 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Button My Data
-    const btnMeusDados = document.getElementById('btn-meus-dados');
-    btnMeusDados?.addEventListener('click', async () => {
-        try {
-            const res = await fetch('/user/get', { credentials: 'include' });
-            if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
-            const user = await res.json();
-            currentUserId = user.id;
-            currentUserData = user;
-            const modalBody = document.getElementById('userModalBody');
-            let fineAlertHtml = '';
-            if (user.status === 'FINED') {
-                fineAlertHtml = `<div class='alert alert-danger mb-3'><i class='bi bi-exclamation-triangle'></i> Você está multado e não pode fazer novos empréstimos até regularizar sua situação.</div>`;
-            }
-            modalBody.innerHTML = `
-                ${fineAlertHtml}
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>Nome:</strong> ${user.name}</li>
-                    <li class="list-group-item"><strong>Email:</strong> ${user.email}</li>
-                    <li class="list-group-item"><strong>CPF:</strong> ${user.cpf}</li>
-                    <li class="list-group-item"><strong>Status:</strong> ${user.status}</li>
-                    <li class="list-group-item"><strong>Perfil:</strong> ${user.profile}</li>
-                </ul>
-            `;
-            const modal = new bootstrap.Modal(document.getElementById('userModal'));
-            modal.show();
-        } catch (e) {
-            showAlert('Erro ao carregar dados do usuário: ' + e.message);
-        }
-    });
-
-    // Abrir modal de edição ao clicar em 'Editar Dados'
+    // Abrir modal de edição ao clicar em 'Editar Dados' (igual dashboard_user.js)
     document.getElementById('btn-edit-user')?.addEventListener('click', () => {
-        if (!currentUserData) return;
+        if (!currentUserData) {
+            document.getElementById('menu-user-meus-dados').click();
+            return;
+        }
         document.getElementById('edit-user-name').value = currentUserData.name || '';
         document.getElementById('edit-user-email').value = currentUserData.email || '';
         document.getElementById('edit-user-cpf').value = currentUserData.cpf || '';
@@ -139,7 +111,7 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Botão Meus Dados (agora pelo menu)
+    // Botão Meus Dados
     document.getElementById('menu-user-meus-dados')?.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
