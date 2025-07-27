@@ -36,22 +36,38 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
     // Books count
-    fetch('/book/count-all', { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => { countLivros.textContent = data.allBooksCount; })
-        .catch(() => { countLivros.textContent = '...'; });
+    if(countLivros) {
+        fetch('/book/count-all', {credentials: 'include'})
+            .then(res => res.json())
+            .then(data => {
+                countLivros.textContent = data.allBooksCount;
+            })
+            .catch(() => {
+                countLivros.textContent = '...';
+            });
+    }
 
     // Users count
-    fetch('/user/count-all', { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => { countUsuarios.textContent = data.usersCount; })
-        .catch(() => { countUsuarios.textContent = '...'; });
+    if(countUsuarios) {
+        fetch('/user/count-all', {credentials: 'include'})
+            .then(res => res.json())
+            .then(data => {
+                countUsuarios.textContent = data.usersCount;
+            })
+            .catch(() => {
+                countUsuarios.textContent = '...';
+            });
+    }
 
     // Active loans count
-    fetch('loan/count-all', { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => countEmprestimos.textContent = data.activeLoansCount)
-        .catch(() => { countEmprestimos.textContent = '...'; });
+    if(countEmprestimos) {
+        fetch('/loan/count-all', {credentials: 'include'})
+            .then(res => res.json())
+            .then(data => countEmprestimos.textContent = data.activeLoansCount)
+            .catch(() => {
+                countEmprestimos.textContent = '...';
+            });
+    }
 
     let adminUserId = null;
     let adminUserData = null;
