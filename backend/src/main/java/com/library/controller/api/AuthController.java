@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
@@ -19,9 +18,7 @@ public class AuthController {
 
   @POST
   @Path(("login"))
-  @RolesAllowed({ "ADMIN", "MEMBER" })
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   public Response login(LoginRequestDTO loginRequestDTO) {
       NewCookie jwtCookie = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
       return Response.status(Response.Status.NO_CONTENT).cookie(jwtCookie).build();
