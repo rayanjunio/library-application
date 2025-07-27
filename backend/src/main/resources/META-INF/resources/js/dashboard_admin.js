@@ -4,6 +4,24 @@ window.addEventListener('DOMContentLoaded', function() {
     const countUsuarios = document.getElementById('count-usuarios');
     const countEmprestimos = document.getElementById('count-emprestimos');
 
+    // Função para mostrar alertas estilizados
+    function showAlert(message, type = 'danger') {
+        const alertArea = document.getElementById('alert-area');
+        if (!alertArea) return;
+        alertArea.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+        setTimeout(() => {
+            const alert = alertArea.querySelector('.alert');
+            if (alert) {
+                alert.classList.remove('show');
+                setTimeout(() => alertArea.innerHTML = '', 150);
+            }
+        }, 5000);
+    }
+
     // Logout
     btnLogout?.addEventListener('click', async () => {
         try {
@@ -28,10 +46,10 @@ window.addEventListener('DOMContentLoaded', function() {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error(await res.text());
-            alert('Conta encerrada com sucesso!');
-            window.location.href = '/';
+            showAlert('Conta encerrada com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            alert('Erro ao encerrar conta: ' + err.message);
+            showAlert('Erro ao encerrar conta: ' + err.message);
         }
     });
 

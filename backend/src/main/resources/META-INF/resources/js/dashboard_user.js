@@ -2,6 +2,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const btnLogout = document.getElementById('btn-logout');
     const countLivros = document.getElementById('count-livros');
     const countEmprestimos = document.getElementById('count-emprestimos');
+    const alertArea = document.getElementById('alert-area');
 
     // Logout
     btnLogout?.addEventListener('click', async () => {
@@ -27,10 +28,10 @@ window.addEventListener('DOMContentLoaded', function() {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error(await res.text());
-            alert('Conta encerrada com sucesso!');
-            window.location.href = '/';
+            showAlert('Conta encerrada com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            alert('Erro ao encerrar conta: ' + err.message);
+            showAlert('Erro ao encerrar conta: ' + err.message);
         }
     });
 
@@ -50,7 +51,7 @@ window.addEventListener('DOMContentLoaded', function() {
     function showAlert(message, type = 'danger') {
         const alertArea = document.getElementById('alert-area');
         if (!alertArea) {
-            alert(message);
+            console.error('Alert area not found');
             return;
         }
         alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">

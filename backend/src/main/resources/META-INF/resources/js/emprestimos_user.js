@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', function() {
     const btnLogout = document.getElementById('btn-logout');
     const emprestimosTbody = document.getElementById('emprestimos-tbody');
+    const alertArea = document.getElementById('alert-area');
 
     // Logout
     btnLogout?.addEventListener('click', async () => {
@@ -26,10 +27,10 @@ window.addEventListener('DOMContentLoaded', function() {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error(await res.text());
-            alert('Conta encerrada com sucesso!');
-            window.location.href = '/';
+            showAlert('Conta encerrada com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            alert('Erro ao encerrar conta: ' + err.message);
+            showAlert('Erro ao encerrar conta: ' + err.message);
         }
     });
 
@@ -37,6 +38,17 @@ window.addEventListener('DOMContentLoaded', function() {
     const btnMeusDados = document.getElementById('btn-meus-dados');
     let currentUserId = null;
     let currentUserData = null;
+
+    function showAlert(message, type = 'danger') {
+        alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    }
+
+    function clearAlert() {
+        alertArea.innerHTML = '';
+    }
 
     btnMeusDados?.addEventListener('click', async () => {
         try {

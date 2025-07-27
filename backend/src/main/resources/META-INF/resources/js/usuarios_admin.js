@@ -170,61 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error(await res.text());
-            alert('Conta encerrada com sucesso!');
-            window.location.href = '/';
+            showModalUsuarioAlert('Conta encerrada com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            alert('Erro ao encerrar conta: ' + err.message);
+            showModalUsuarioAlert('Erro ao encerrar conta: ' + err.message);
         }
     });
 
     carregarUsuarios();
-
-    window.editarUsuario = async (id) => {
-        try {
-            const res = await fetch(`/user/get`, { credentials: 'include' });
-            if (!res.ok) throw new Error('Erro ao carregar usuário');
-            const u = await res.json();
-            document.getElementById('nome').value = u.name;
-            document.getElementById('email').value = u.email;
-            document.getElementById('cpf').value = u.cpf;
-            document.getElementById('senha-container').style.display = 'none'; // esconde campo senha
-            document.getElementById('modalUsuarioLabel').textContent = 'Editar Usuário';
-            modoEdicao = { ativo: true, id };
-            modalUsuario.show();
-        } catch (e) {
-            showError('Erro: ' + e.message);
-        }
-    };
-
-    window.excluirUsuario = async (id) => {
-        if (!confirm('Confirmar exclusão?')) return;
-        try {
-            const res = await fetch(`/user/delete`, {
-                method: 'DELETE',
-                credentials: 'include'
-            });
-            if (!res.ok) {
-                let errorMsg = 'Erro ao excluir usuário';
-                try {
-                    const errorText = await res.text();
-                    const errorJson = JSON.parse(errorText);
-                    if (errorJson && errorJson.message) {
-                        errorMsg = errorJson.message;
-                    } else {
-                        errorMsg = errorText;
-                    }
-                } catch (e) {
-                    errorMsg = 'Erro ao excluir usuário';
-                }
-                showError(errorMsg);
-                return;
-            }
-            showSuccess('Usuário excluído');
-            carregarUsuarios();
-        } catch (e) {
-            showError('Erro: ' + e.message);
-        }
-    };
 
     const cpfInput = document.getElementById('cpf');
     cpfInput.addEventListener('input', () => aplicarMascaraCPF(cpfInput));

@@ -28,10 +28,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error(await res.text());
-            alert('Conta encerrada com sucesso!');
-            window.location.href = '/';
+            showModalEmprestimoAlert('Conta encerrada com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            alert('Erro ao encerrar conta: ' + err.message);
+            showModalEmprestimoAlert('Erro ao encerrar conta: ' + err.message);
         }
     });
 

@@ -37,10 +37,10 @@ window.addEventListener('DOMContentLoaded', function () {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error(await res.text());
-            alert('Conta encerrada com sucesso!');
-            window.location.href = '/';
+            showAlert('Conta encerrada com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            alert('Erro ao encerrar conta: ' + err.message);
+            showAlert('Erro ao encerrar conta: ' + err.message);
         }
     });
 
