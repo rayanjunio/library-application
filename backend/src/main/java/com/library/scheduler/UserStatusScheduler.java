@@ -16,6 +16,5 @@ public class UserStatusScheduler {
   @Scheduled(every = "1m")
   public void validatePendingLoans() {
     loanBO.fineUsersWithPendingLoans();
-    System.out.println("executing scheduling");
   }
 }
