@@ -5,13 +5,13 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
 
 public class UserUpdateDTO {
-    @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
+    @Size(min = 2, max = 70, message = "O nome deve ter entre 2 e 70 caracteres")
     private String name;
 
-    @Email(message = "E-mail format is invalid")
+    @Email(message = "O formato do e-mail é inválido")
     private String email;
 
-    @CPF(message = "CPF is invalid")
+    @CPF(message = "O CPF informado é inválido")
     private String cpf;
 
     public UserUpdateDTO() {}

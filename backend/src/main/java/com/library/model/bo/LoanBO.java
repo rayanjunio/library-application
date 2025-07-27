@@ -4,7 +4,7 @@ import com.library.exception.type.BusinessException;
 import com.library.model.dao.BookDAO;
 import com.library.model.dao.LoanDAO;
 import com.library.model.dao.UserDAO;
-import com.library.model.dto.PagedResponseDTO;
+import com.library.model.dto.pagination.PagedResponseDTO;
 import com.library.model.dto.loan.LoanRequestDTO;
 import com.library.model.dto.loan.LoanResponseDTO;
 import com.library.model.dto.loan.LoanUpdateDTO;

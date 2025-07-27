@@ -6,20 +6,20 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
 
 public class UserRequestDTO {
-  @NotBlank(message = "Name cannot be blank")
-  @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
+  @NotBlank(message = "O nome não pode estar em branco")
+  @Size(min = 2, max = 70, message = "O nome deve ter entre 2 e 70 caracteres")
   private String name;
 
-  @NotBlank(message = "E-mail cannot be blank")
-  @Email(message = "E-mail format is invalid")
+  @NotBlank(message = "O e-mail não pode estar em branco")
+  @Email(message = "O formato do e-mail é inválido")
   private String email;
 
-  @NotBlank(message = "Password cannot be blank")
-  @Size(min = 8, message = "Password must be at least 8 characters long")
+  @NotBlank(message = "A senha não pode estar em branco")
+  @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres")
   private String password;
 
-  @NotBlank(message = "CPF cannot be blank")
-  @CPF(message = "CPF is invalid")
+  @NotBlank(message = "O CPF não pode estar em branco")
+  @CPF(message = "O CPF informado é inválido")
   private String cpf;
 
   public UserRequestDTO() {}

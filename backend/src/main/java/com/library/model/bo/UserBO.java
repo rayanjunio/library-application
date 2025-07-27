@@ -2,7 +2,7 @@ package com.library.model.bo;
 
 import com.library.exception.type.BusinessException;
 import com.library.model.dao.UserDAO;
-import com.library.model.dto.PagedResponseDTO;
+import com.library.model.dto.pagination.PagedResponseDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;

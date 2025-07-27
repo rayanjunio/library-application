@@ -13,7 +13,7 @@ public class LoanUpdateDTO {
 
   private String bookIsbn;
 
-  @FutureOrPresent(message = "Expected return date cannot be in the past")
+  @FutureOrPresent(message = "A data de devolução esperada não pode estar no passado")
   private LocalDate expectedReturnDate;
 
   public LoanUpdateDTO() {}

@@ -1,7 +1,7 @@
 package com.library.controller.api;
 
 import com.library.model.bo.UserBO;
-import com.library.model.dto.PagedResponseDTO;
+import com.library.model.dto.pagination.PagedResponseDTO;
 import com.library.model.dto.user.ChangePasswordDTO;
 import com.library.model.dto.user.UserRequestDTO;
 import com.library.model.dto.user.UserUpdateDTO;

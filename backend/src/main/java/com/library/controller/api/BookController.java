@@ -1,7 +1,7 @@
 package com.library.controller.api;
 
 import com.library.model.bo.BookBO;
-import com.library.model.dto.PagedResponseDTO;
+import com.library.model.dto.pagination.PagedResponseDTO;
 import com.library.model.dto.book.BookCreateDTO;
 import com.library.model.dto.book.BookUpdateDTO;
 import com.library.model.dto.book.BookResponseDTO;

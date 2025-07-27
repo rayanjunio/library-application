@@ -1,4 +1,4 @@
-package com.library.model.dto;
+package com.library.model.dto.pagination;
 
 import java.util.List;
 

@@ -16,24 +16,24 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotBlank(message = "Name cannot be blank")
-  @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
+  @NotBlank(message = "O nome não pode estar em branco")
+  @Size(min = 2, max = 70, message = "O nome deve ter entre 2 e 70 caracteres")
   private String name;
 
-  @NotBlank(message = "E-mail cannot be blank")
-  @Email(message = "E-mail format is invalid")
+  @NotBlank(message = "O e-mail não pode estar em branco")
+  @Email(message = "O formato do e-mail é inválido")
   @Column(unique = true)
   private String email;
 
-  @NotBlank(message = "Password cannot be blank")
+  @NotBlank(message = "A senha não pode estar em branco")
   private String password;
 
-  @NotBlank(message = "CPF cannot be blank")
-  @CPF(message = "CPF is invalid")
+  @NotBlank(message = "O CPF não pode estar em branco")
+  @CPF(message = "O CPF é inválido")
   @Column(unique = true)
   private String cpf;
 
-  @NotNull(message = "Status cannot be blank")
+  @NotNull(message = "O status não pode ser nulo")
   @Enumerated(EnumType.STRING)
   private UserStatus status;
 

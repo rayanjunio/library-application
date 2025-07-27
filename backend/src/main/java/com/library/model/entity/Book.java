@@ -15,18 +15,18 @@ public class Book {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotBlank(message = "ISBN cannot be blank")
+  @NotBlank(message = "O ISBN não pode estar em branco")
   @Column(unique = true, nullable = false)
   private String isbn;
 
-  @NotBlank(message = "Title cannot be blank")
+  @NotBlank(message = "O título não pode estar em branco")
   private String title;
 
-  @NotBlank(message = "Author name cannot be blank")
+  @NotBlank(message = "O nome do autor não pode estar em branco")
   private String author;
 
-  @NotNull(message = "Quantity cannot be null")
-  @Min(value = 1, message = "Quantity must be at least 1")
+  @NotNull(message = "A quantidade não pode ser nula")
+  @Min(value = 1, message = "A quantidade deve ser pelo menos 1")
   private int quantity;
 
   private int availableQuantity;

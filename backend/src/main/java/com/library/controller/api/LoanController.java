@@ -1,7 +1,7 @@
 package com.library.controller.api;
 
 import com.library.model.bo.LoanBO;
-import com.library.model.dto.PagedResponseDTO;
+import com.library.model.dto.pagination.PagedResponseDTO;
 import com.library.model.dto.auth.UserTokenInfoDTO;
 import com.library.model.dto.loan.LoanRequestDTO;
 import com.library.model.dto.loan.LoanResponseDTO;

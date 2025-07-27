@@ -11,7 +11,7 @@ public class Profile {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotNull(message = "Role cannot be null")
+  @NotNull(message = "O papel (role) não pode ser nulo")
   @Enumerated(EnumType.STRING)
   private Role role;
 

@@ -7,14 +7,14 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class LoanRequestDTO {
-  @NotBlank(message = "User email cannot be blank")
+  @NotBlank(message = "O e-mail do usuário não pode estar em branco")
   private String userEmail;
 
-  @NotBlank(message = "Book isbn cannot be blank")
+  @NotBlank(message = "O ISBN do livro não pode estar em branco")
   private String bookIsbn;
 
-  @NotNull(message = "Expected return date cannot be null")
-  @FutureOrPresent(message = "Expected return date cannot be in the past")
+  @NotNull(message = "A data de devolução esperada não pode ser nula")
+  @FutureOrPresent(message = "A data de devolução esperada não pode estar no passado")
   private LocalDate expectedReturnDate;
 
   public LoanRequestDTO() {}
