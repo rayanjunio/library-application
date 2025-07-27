@@ -13,14 +13,15 @@ import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
 @Path("auth")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
 public class AuthController {
   @Inject
   AuthService authService;
 
   @POST
   @Path(("login"))
+  @RolesAllowed({ "ADMIN", "MEMBER" })
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response login(LoginRequestDTO loginRequestDTO) {
       NewCookie jwtCookie = authService.authenticate(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
       return Response.status(Response.Status.NO_CONTENT).cookie(jwtCookie).build();
