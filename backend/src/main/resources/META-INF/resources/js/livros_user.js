@@ -1,16 +1,12 @@
 window.addEventListener('DOMContentLoaded', function () {
     const btnLogout = document.getElementById('btn-logout');
     const booksContainer = document.getElementById('books-container');
-    const searchInput = document.getElementById('search-input');
-    const searchBtn = document.getElementById('search-btn');
     const alertArea = document.getElementById('alert-area');
     const loading = document.getElementById('loading');
     const pagination = document.getElementById('pagination');
 
     let allBooks = [];
-    let filteredBooks = [];
     let currentPage = 0;
-    let currentUserId = null;
     let currentUserData = null;
 
     // Logout
@@ -368,14 +364,6 @@ window.addEventListener('DOMContentLoaded', function () {
             `;
             });
     }
-
-    // Eventos de busca
-    searchBtn.addEventListener('click', () => loadBooks());
-    searchInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            loadBooks();
-        }
-    });
 
     // Inicialização
     loadBooks();
