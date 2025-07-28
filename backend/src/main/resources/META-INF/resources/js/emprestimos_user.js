@@ -235,8 +235,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function formatDate(dateString) {
         if (!dateString) return '-';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR');
+        const [year, month, day] = dateString.split('-');
+        return `${day}/${month}/${year}`;
     }
 
     function calculateDaysRemaining(returnDate) {
