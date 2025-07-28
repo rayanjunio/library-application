@@ -27,7 +27,17 @@ window.addEventListener('DOMContentLoaded', function() {
                 method: 'DELETE',
                 credentials: 'include'
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao encerrar conta';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             showAlert('Conta encerrada com sucesso!', 'success');
             setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
@@ -37,13 +47,39 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Available books count
     fetch('/book/count-available', { credentials: 'include' })
-        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(async res => {
+            if (!res.ok) {
+                let errorMsg = 'Erro ao carregar contagem de livros';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
+            return res.json();
+        })
         .then(data => countLivros.textContent = data.availableBooksCount)
         .catch(() => countLivros.textContent = '...');
 
     // Active loans from user count
     fetch('/loan/count-from-user', { credentials: 'include' })
-        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(async res => {
+            if (!res.ok) {
+                let errorMsg = 'Erro ao carregar contagem de empréstimos';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
+            return res.json();
+        })
         .then(data => countEmprestimos.textContent = data.activeLoansCount)
         .catch(() => countEmprestimos.textContent = '...');
 
@@ -132,7 +168,17 @@ window.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         try {
             const res = await fetch('/user/get', { credentials: 'include' });
-            if (!res.ok) throw new Error('Erro ao buscar dados do usuário');
+            if (!res.ok) {
+                let errorMsg = 'Erro ao buscar dados do usuário';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             const user = await res.json();
             currentUserId = user.id;
             currentUserData = user;

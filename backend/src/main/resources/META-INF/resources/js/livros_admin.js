@@ -33,11 +33,21 @@ window.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE',
                 credentials: 'include'
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao encerrar conta';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             showModalAlert('Conta encerrada com sucesso!', 'success');
             setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
-            showModalAlert('Erro ao encerrar conta: ' + err.message);
+            showModalAlert(err.message);
         }
     });
 
@@ -106,12 +116,22 @@ window.addEventListener('DOMContentLoaded', () => {
     const carregarLivros = async () => {
         try {
             const res = await fetch(`/book/get-all?page=${currentPage}`, { credentials: 'include' });
-            if (!res.ok) throw new Error('Erro ao buscar livros');
+            if (!res.ok) {
+                let errorMsg = 'Erro ao carregar livros';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             const data = await res.json();
             exibirLivros(data.content);
             renderPagination(data.total, data.page, data.size);
         } catch (e) {
-            showAlert('Erro ao carregar livros disponíveis');
+            showAlert(e.message);
         }
     };
 
@@ -190,7 +210,17 @@ window.addEventListener('DOMContentLoaded', () => {
     const editarLivro = async (isbn) => {
         try {
             const res = await fetch(`/book/get/${isbn}`, { credentials: 'include' });
-            if (!res.ok) throw new Error();
+            if (!res.ok) {
+                let errorMsg = 'Erro ao carregar dados do livro';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             const livro = await res.json();
 
             const isbnInput = document.getElementById('isbn');

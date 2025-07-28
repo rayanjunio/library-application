@@ -45,7 +45,17 @@ window.addEventListener('DOMContentLoaded', function() {
                 method: 'DELETE',
                 credentials: 'include'
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                let errorMsg = 'Erro ao encerrar conta';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             showAlert('Conta encerrada com sucesso!', 'success');
             setTimeout(() => { window.location.href = '/'; }, 1500);
         } catch (err) {
@@ -56,7 +66,20 @@ window.addEventListener('DOMContentLoaded', function() {
     // Books count
     if(countLivros) {
         fetch('/book/count-all', {credentials: 'include'})
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) {
+                    let errorMsg = 'Erro ao carregar contagem de livros';
+                    try {
+                        const errorText = await res.text();
+                        const errorJson = JSON.parse(errorText);
+                        if (errorJson && errorJson.message) {
+                            errorMsg = errorJson.message;
+                        }
+                    } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+                return res.json();
+            })
             .then(data => {
                 countLivros.textContent = data.allBooksCount;
             })
@@ -68,7 +91,20 @@ window.addEventListener('DOMContentLoaded', function() {
     // Users count
     if(countUsuarios) {
         fetch('/user/count-all', {credentials: 'include'})
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) {
+                    let errorMsg = 'Erro ao carregar contagem de usuários';
+                    try {
+                        const errorText = await res.text();
+                        const errorJson = JSON.parse(errorText);
+                        if (errorJson && errorJson.message) {
+                            errorMsg = errorJson.message;
+                        }
+                    } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+                return res.json();
+            })
             .then(data => {
                 countUsuarios.textContent = data.usersCount;
             })
@@ -80,7 +116,20 @@ window.addEventListener('DOMContentLoaded', function() {
     // Active loans count
     if(countEmprestimos) {
         fetch('/loan/count-all', {credentials: 'include'})
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) {
+                    let errorMsg = 'Erro ao carregar contagem de empréstimos';
+                    try {
+                        const errorText = await res.text();
+                        const errorJson = JSON.parse(errorText);
+                        if (errorJson && errorJson.message) {
+                            errorMsg = errorJson.message;
+                        }
+                    } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+                return res.json();
+            })
             .then(data => countEmprestimos.textContent = data.activeLoansCount)
             .catch(() => {
                 countEmprestimos.textContent = '...';
@@ -95,7 +144,17 @@ window.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         try {
             const res = await fetch('/user/get', { credentials: 'include' });
-            if (!res.ok) throw new Error('Erro ao buscar dados do admin');
+            if (!res.ok) {
+                let errorMsg = 'Erro ao buscar dados do admin';
+                try {
+                    const errorText = await res.text();
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson && errorJson.message) {
+                        errorMsg = errorJson.message;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
             const user = await res.json();
             adminUserId = user.id;
             adminUserData = user;
@@ -112,7 +171,7 @@ window.addEventListener('DOMContentLoaded', function() {
             const modal = new bootstrap.Modal(document.getElementById('adminUserModal'));
             modal.show();
         } catch (e) {
-            alert('Erro ao carregar dados do admin: ' + e.message);
+            showAlert('Erro ao carregar dados do admin: ' + e.message);
         }
     });
 
