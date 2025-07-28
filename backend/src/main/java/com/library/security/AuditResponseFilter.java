@@ -33,9 +33,8 @@ public class AuditResponseFilter implements ContainerResponseFilter {
         return;
       }
 
-      String action = context.getAction();
       managedExecutor.runAsync(() -> {
-        logBO.create(new LogDTO(action, context.getUserId(), context.getTimestamp()));
+        logBO.create(new LogDTO(context.getAction(), context.getUserId(), context.getTimestamp()));
       });
     }
   }
