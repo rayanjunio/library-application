@@ -69,6 +69,14 @@ window.addEventListener('DOMContentLoaded', () => {
         return `${day}/${month}/${year}`;
     };
 
+    const calculateDaysRemaining = (returnDate) => {
+        if (!returnDate) return null;
+        const today = new Date();
+        const returnDateObj = new Date(returnDate);
+        const diffTime = returnDateObj - today;
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    };
+
     const isEmprestimoAtivo = (emp) => {
         return emp.active === true;
     };
@@ -88,6 +96,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         emprestimos.forEach(emp => {
             const ativo = isEmprestimoAtivo(emp);
+            const daysRemaining = calculateDaysRemaining(emp.expectedReturnDate);
+            const isOverdue = daysRemaining < 0;
             const row = document.createElement('tr');
 
             row.innerHTML = `
@@ -99,11 +109,19 @@ window.addEventListener('DOMContentLoaded', () => {
                     <br><small class="text-muted">ISBN: ${emp.bookIsbn}</small>
                 </td>
                 <td>${formatDate(emp.loanDate)}</td>
-                <td>${formatDate(emp.expectedReturnDate)}</td>
                 <td>
-                    <span class="badge bg-${ativo ? 'success' : 'secondary'}">
-                        ${ativo ? 'Ativo' : 'Finalizado'}
-                    </span>
+                    ${formatDate(emp.expectedReturnDate)}
+                    ${ativo && daysRemaining !== null ? `
+                        <br><small class="${isOverdue ? 'text-danger' : 'text-muted'}">
+                            ${isOverdue ? `${Math.abs(daysRemaining)} dias atrasado` : `${daysRemaining} dias restantes`}
+                        </small>` : ''}
+                </td>
+                <td>
+                    ${ativo
+                ? (isOverdue
+                    ? '<span class="badge bg-danger">Atrasado</span>'
+                    : '<span class="badge bg-success">Ativo</span>')
+                : '<span class="badge bg-secondary">Finalizado</span>'}
                 </td>
                 <td>
                     ${ativo
