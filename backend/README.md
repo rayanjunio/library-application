@@ -4,7 +4,7 @@ Este documento descreve os pré-requisitos e os passos necessários para configu
 
 ## 1. Pré-requisitos
 
-Para executar este sistema, você precisará ter instalado:
+Para executar este sistema, você precisará entrar na pasta `/backend` e ter instalado:
 
 - Java JDK 17
 - Maven 3.8.1+ (ou o Maven Wrapper `./mvnw` incluso no projeto)
@@ -13,6 +13,7 @@ Para executar este sistema, você precisará ter instalado:
 
 ## 2. Configuração do Banco de Dados
 
+Certifique-se de que o banco de dados está criado e acessível com as seguintes credenciais definidas.
 As credenciais e URL estão definidas em `src/main/resources/application.properties`:
 
 - URL: `jdbc:postgresql://localhost:5432/library_db`
@@ -46,6 +47,12 @@ O modo de desenvolvimento permite "live coding" (alteracoes aplicadas sem reinic
 ./mvnw quarkus:dev
 ```
 
+No Windows:
+
+```bat
+mvnw.cmd quarkus:dev
+```
+
 A aplicação ficará disponivel em: `http://localhost:8080`.
 
 ## 5. Compilação e Execucao (Modo Produção)
@@ -54,6 +61,12 @@ Empacotar a aplicação:
 
 ```bash
 ./mvnw package
+```
+
+No Windows:
+
+```bat
+mvnw.cmd package
 ```
 
 Executar o JAR:
@@ -68,6 +81,12 @@ Gere o pacote Maven primeiro:
 
 ```bash
 ./mvnw package
+```
+
+No Windows:
+
+```bat
+mvnw.cmd package
 ```
 
 Construa a imagem Docker:
