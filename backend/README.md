@@ -1,78 +1,91 @@
-# libraryapp
+# Guia de Execução: Library Application
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este documento descreve os pré-requisitos e os passos necessários para configurar, compilar e executar o sistema de gerenciamento de biblioteca baseado em Quarkus.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## 1. Pré-requisitos
 
-## Running the application in dev mode
+Para executar este sistema, você precisará ter instalado:
 
-You can run your application in dev mode that enables live coding using:
+- Java JDK 17
+- Maven 3.8.1+ (ou o Maven Wrapper `./mvnw` incluso no projeto)
+- PostgreSQL (rodando localmente ou via Docker na porta 5432)
+- Docker (opcional, para execução via containers)
 
-```shell script
+## 2. Configuração do Banco de Dados
+
+As credenciais e URL estão definidas em `src/main/resources/application.properties`:
+
+- URL: `jdbc:postgresql://localhost:5432/library_db`
+- Usuario: `postgres`
+- Senha: `123456`
+
+Observação: o Hibernate está configurado para atualizar o esquema automaticamente:
+`quarkus.hibernate-orm.database.generation=update`.
+
+## 3. Configuração de Segurança (JWT)
+
+O sistema utiliza JSON Web Tokens (JWT) para autenticação. As chaves devem estar nos caminhos configurados:
+
+- Chave Publica: `src/main/resources/keys/publicKey.pem`
+- Chave Privada: `src/main/resources/keys/privateKey.pem`
+
+Para gerar as chaves (exemplo com OpenSSL):
+
+```bash
+openssl genrsa -out privateKey.pem 2048
+openssl rsa -pubout -in privateKey.pem -out publicKey.pem
+```
+
+Coloque os arquivos gerados dentro de `src/main/resources/keys/`.
+
+## 4. Execução em Modo de Desenvolvimento
+
+O modo de desenvolvimento permite "live coding" (alteracoes aplicadas sem reiniciar o servidor).
+
+```bash
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+A aplicação ficará disponivel em: `http://localhost:8080`.
 
-## Packaging and running the application
+## 5. Compilação e Execucao (Modo Produção)
 
-The application can be packaged using:
+Empacotar a aplicação:
 
-```shell script
+```bash
 ./mvnw package
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+Executar o JAR:
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+```bash
+java -jar target/quarkus-app/quarkus-run.jar
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+## 6. Execução via Docker (JVM Mode)
 
-## Creating a native executable
+Gere o pacote Maven primeiro:
 
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
+```bash
+./mvnw package
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+Construa a imagem Docker:
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+```bash
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/libraryapp-jvm .
 ```
 
-You can then execute your native executable with: `./target/libraryapp-1.0.0-SNAPSHOT-runner`
+Inicie o container:
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+```bash
+docker run -i --rm -p 8080:8080 quarkus/libraryapp-jvm
+```
 
-## Related Guides
+## 7. Informacoes do Sistema
 
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
+- Público-alvo: Membros (clientes) e Administradores (gestores)
+- Rotas públicas: `/auth/login`, `/user/create`, `/`, `/login`, `/register`, `/css/*`, `/js/*`, `/favicon.ico`
+- Rotas protegidas: todas as demais exigem token JWT via cookie `jwt`
+- Tarefa agendada: verificação de atrasos a cada 1 minuto (multas de usuarios inadimplentes)
 
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
-
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
-
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
